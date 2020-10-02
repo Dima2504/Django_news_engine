@@ -23,6 +23,6 @@ from .views import news_redirect
 urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('admin/', admin.site.urls),
-    path('news/', include('news.urls')),
     path('', news_redirect),
+    path('news/', include('news.urls'))
 ]
