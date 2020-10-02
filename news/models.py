@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib import auth
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import BaseUserManager, UserManager
 
 from django.core.mail import send_mail
 
@@ -13,9 +13,7 @@ from django.utils import timezone
 # Create your models here.
 
 
-class UserManager(BaseUserManager):
-    use_in_migrations = True
-
+class CustomUserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
         """
         Creates and saves a User with the given email and password.
@@ -44,32 +42,6 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_fields)
 
-    def with_perm(self, perm, is_active=True, include_superusers=True, backend=None, obj=None):
-        if backend is None:
-            backends = auth._get_backends(return_tuples=True)
-            if len(backends) == 1:
-                backend, _ = backends[0]
-            else:
-                raise ValueError(
-                    'You have multiple authentication backends configured and '
-                    'therefore must provide the `backend` argument.'
-                )
-        elif not isinstance(backend, str):
-            raise TypeError(
-                'backend must be a dotted import path string (got %r).'
-                % backend
-            )
-        else:
-            backend = auth.load_backend(backend)
-        if hasattr(backend, 'with_perm'):
-            return backend.with_perm(
-                perm,
-                is_active=is_active,
-                include_superusers=include_superusers,
-                obj=obj,
-            )
-        return self.none()
-
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
@@ -91,7 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
 
-    objects = UserManager()
+    objects = CustomUserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
