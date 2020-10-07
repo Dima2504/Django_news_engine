@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
 
     'auth_system.apps.AuthSystemConfig',
     'news.apps.NewsConfig',
@@ -166,5 +167,8 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         }
-    }
+    },
+    'facebook': {
+
+    },
 }
