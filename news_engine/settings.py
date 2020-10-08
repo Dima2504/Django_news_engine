@@ -78,7 +78,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
-                 os.path.join(BASE_DIR, 'auth_system', 'templates')]
+                 os.path.join(BASE_DIR, 'auth_system', 'templates'),
+                 os.path.join(BASE_DIR, 'news', 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -154,6 +155,9 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'files', 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media')
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 
 AUTH_USER_MODEL = 'auth_system.User'
@@ -165,7 +169,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-LOGIN_REDIRECT_URL = 'news:index'
+LOGIN_REDIRECT_URL = 'news:start'
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

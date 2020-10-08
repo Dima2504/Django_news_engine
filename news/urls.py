@@ -4,5 +4,5 @@ from .views import *
 app_name = 'news'
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('', index, name='start'),
 ]

@@ -2,4 +2,4 @@ from django.shortcuts import redirect
 
 
 def news_redirect(request):
-    return redirect('news:index', permanent=True)
+    return redirect('news:start', permanent=True)

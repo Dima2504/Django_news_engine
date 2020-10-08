@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block head_title %}{% endblock %}</title>
-    {% block extra_head %}
-    {% endblock %}
+
 
     <!-- LATER SHOULD USE DJANGO-BOOTSTRAP4-->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -24,8 +23,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
             integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
             crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/mics.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    {% block extra_head %}
+    {% endblock %}
 
 </head>
 <body>
