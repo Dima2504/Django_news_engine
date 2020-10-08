@@ -77,7 +77,8 @@ ROOT_URLCONF = 'news_engine.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'auth_system', 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -181,3 +182,7 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 
+ACCOUNT_FORMS = {
+    'login': 'auth_system.forms.MyLoginForm',
+    'signup': 'auth_system.forms.MySignupForm',
+}
