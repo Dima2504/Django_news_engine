@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
 
     'auth_system.apps.AuthSystemConfig',
     'news.apps.NewsConfig',
@@ -76,13 +77,15 @@ ROOT_URLCONF = 'news_engine.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'auth_system', 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -145,6 +148,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'files', 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media')
+
+
 
 AUTH_USER_MODEL = 'auth_system.User'
 
@@ -166,5 +176,13 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         }
-    }
+    },
+    'facebook': {
+
+    },
+}
+
+ACCOUNT_FORMS = {
+    'login': 'auth_system.forms.MyLoginForm',
+    'signup': 'auth_system.forms.MySignupForm',
 }

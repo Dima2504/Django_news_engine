@@ -1,0 +1,44 @@
+{% extends "account/base.html" %}
+
+{% load i18n socialaccount %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+    <div class="top-space section-block col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
+        <div class="section-body">
+            <div class="big-text">Реєстрація</div>
+            <div class="section-header">Через соц. мережі</div>
+            <div class="single-block">
+                <div class="single-content">
+                    <img src="{{ MEDIA_URL }}/icons/google.png" class="icon">
+                    <a href="{% provider_login_url 'google' %}">Зайти через Гугл</a>
+                </div>
+            </div>
+            <div class="single-block">
+                <div class="single-content">
+                    <img src="{{ MEDIA_URL }}/icons/facebook.png" class="icon">
+                    <a href="{% provider_login_url 'facebook' %}">Зайти з Facebook</a>
+                </div>
+            </div>
+            <div class="section-header">Інший варіант</div>
+            <form action="{% url 'account_signup' %}" method="POST">
+                {% csrf_token %}
+                <div class="single-content">
+                    {{ form.email }}
+                </div>
+                <div class="single-content">
+                    {{ form.password1 }}
+                </div>
+                <div class="single-content">
+                    {{ form.password2 }}
+                </div>
+
+                <button type="submit" class="shadow-default right-button">Зареєструватися</button>
+            </form>
+            <a href="{% url 'account_login' %}">
+                <button class="shadow-default">Повернутися до входу</button>
+            </a>
+        </div>
+    </div>
+{% endblock %}
