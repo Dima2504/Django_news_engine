@@ -1,0 +1,52 @@
+.modal-header {
+	color: white;
+	border: 0;
+}
+
+.modal-content {
+	background-color: #252525;
+}
+
+.modal-footer {
+	border: 0;
+}
+
+button.close {
+	color: white;
+}
+
+button.btn {
+	margin-top: 3%;
+	padding: 10px;
+	outline: none;
+	border: 1px solid black;
+	border-bottom: 3px solid #D80000;
+	background-color: #2E2F32;
+	color: #C8C8C8;
+	border-radius: 0;
+}
+
+button.btn:hover {
+	outline: none;
+	border: 1px solid black;
+	border-bottom: 3px solid #D80000;
+	background-color: #D80000;
+	transition: 0.3s;
+	color: white;
+}
+
+button.btn:focus {
+	outline: none;
+	border: 1px solid black;
+	border-bottom: 3px solid #D80000;
+	background-color: #D80000;
+	box-shadow: none;
+}
+
+button.btn:active {
+	outline: none!important;
+	border: 1px solid black!important;
+	border-bottom: 3px solid #D80000!important;
+	background-color: #D80000!important;
+	box-shadow: none!important;
+}
