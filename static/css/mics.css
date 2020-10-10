@@ -68,3 +68,12 @@ button:focus {
 .top-space {
 	margin-top: 3%;
 }
+
+.section-float-button {
+	text-align: right;
+}
+
+.additional-info {
+	padding: 10px 0; 
+	font-size: 1.5em;
+}

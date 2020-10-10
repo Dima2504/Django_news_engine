@@ -2,30 +2,37 @@
 
 {% load i18n %}
 {% load account %}
+{% load static %}
 
-{% block head_title %}{% trans "Confirm E-mail Address" %}{% endblock %}
+{% block head_title %}Підтвердження електронної пошти{% endblock %}
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mics.css' %}">
+{% endblock %}
 
 
 {% block content %}
-<h1>{% trans "Confirm E-mail Address" %}</h1>
-
-{% if confirmation %}
-
-{% user_display confirmation.email_address.user as user_display %}
-
-<p>{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
-
-<form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
-{% csrf_token %}
-    <button type="submit">{% trans 'Confirm' %}</button>
-</form>
-
-{% else %}
-
-{% url 'account_email' as email_url %}
-
-<p>{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
-
-{% endif %}
-
+    <div class="top-space section-block col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
+        <div class="section-body">
+            <div class="big-text">Підтвердження ел. пошти</div>
+            {% if confirmation %}
+                <div class="single-content">
+                    <p class="additional-info">Будь ласка, підтвердіть, що <a
+                            href="mailto:{{ confirmation.email_address.email }}"></a> - це пошта
+                        користувача {{ confirmation.email_address.user }}</p>
+                </div>
+                <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+                    {% csrf_token %}
+                    <div class="section-float-button">
+                        <button class="shadow-default">Підтвердити</button>
+                    </div>
+                </form>
+            {% else %}
+                <div class="single-content">
+                    <p class="additional-info">Це посиланн на підтвердження пошти недійсне, будь ласка, перейдіть
+                        на {% url 'account_email' %} щоб надіслати новий запит на підтвердження пошти</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

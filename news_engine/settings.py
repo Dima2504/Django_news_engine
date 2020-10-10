@@ -189,4 +189,6 @@ SOCIALACCOUNT_PROVIDERS = {
 ACCOUNT_FORMS = {
     'login': 'auth_system.forms.MyLoginForm',
     'signup': 'auth_system.forms.MySignupForm',
+    'reset_password': 'auth_system.forms.MyResetPasswordForm',
+    'reset_password_from_key': 'auth_system.forms.MyResetPasswordKeyForm',
 }

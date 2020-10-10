@@ -23,7 +23,6 @@ a:hover {
 #sidebar-menu {
 	padding: 0;
 	overflow: hidden;
-	font-size: 2em;
 	height: 100%;
 	position: fixed;
 	background-color: #252525;
@@ -34,7 +33,7 @@ a:hover {
 
 .bold {
 	font-weight: bold;
-	font-size: 1.4em;
+	font-size: 3em;
 	text-align: center;
 	color: white;
 	margin-top: 20px;
@@ -53,6 +52,7 @@ p {
 	border-left: 5px solid #D80000;
 	padding-left: 20px;
 	width: 100%;
+	font-size: 2em;
 }
 
 #sidebar-menu ul li:hover {
@@ -63,12 +63,6 @@ p {
 	color: white;
 }
 
-.shadow-box-b {
-	-webkit-box-shadow: 0px 0px 3px 3px rgba(0,0,0,0.75);
-	-moz-box-shadow: 0px 0px 3px 3px rgba(0,0,0,0.75);
-	box-shadow: 0px 0px 3px 3px rgba(0,0,0,0.75);
-}
-
 li {
 	list-style-type: none;
 	padding: 5px 0 10px 0;
@@ -76,31 +70,43 @@ li {
 
 #main {
 	padding: 0;
+	position: relative;
 }
 
-#navbar {
-	background-color: #252525;
+.navbar-button {
+	cursor: pointer;
+}
+
+.navbar {
+	background-color: #252525!important;
 	color: white;
 	width: 100%;
 	border-left: 1px solid black;
 	border-right: 1px solid black;
-	margin-bottom: 3%;
+	padding: 0;
+	margin-bottom: 5%;
 }
 
-#navbar ul {
+.nav-link {
+	color: inherit!important;
+	margin: 0;
+	padding: 0;
+}
+
+.navbar ul {
 	text-align: center;
-	width: 95%;
-	margin-left: 5%;
 }
 
-#navbar li {
+.navbar li {
 	display: inline-block;
 	padding: 20px;
 	font-size: 1.5em;
 	font-weight: 600;
+	max-width: 100%;
+	padding: 30px 10px;
 }
 
-#navbar li:hover {
+.navbar a:hover{
 	border: 0 0 3px solid #D80000 0;
 	cursor: pointer;
 	background-color: #2F3136;
@@ -110,6 +116,7 @@ li {
 #navbar-three-stripes {
 	top: 0.5%;
 	left: 2.5%;
+	padding: 3px;
 	position: absolute;
 	display: inline-block;
 	cursor: pointer;
@@ -159,7 +166,8 @@ li {
 }
 
 .section-block {
-	margin-bottom: 3%;
+	position: relative;
+	margin-bottom: 50px;
 	padding: 3%;
 	background-color: #252525;
 	-webkit-box-shadow: 0px 0px 3px 3px rgba(0,0,0,0.75);
