@@ -10,6 +10,9 @@ from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
+from news.models import Category
+
+
 # Create your models here.
 
 
@@ -62,6 +65,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+    categories = models.ManyToManyField(Category, related_name='users',
+                                        help_text='Категорії, які користувач відслідковує')
 
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
@@ -85,6 +90,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+
     def get_full_name(self):
         full_name = '%s %s' % (self.first_name, self.last_name)
         return full_name.strip()
