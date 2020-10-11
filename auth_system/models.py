@@ -1,9 +1,9 @@
 from django.db import models
 
-from django.contrib import auth
+
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-from django.contrib.auth.models import BaseUserManager, UserManager
+from django.contrib.auth.models import  UserManager
 
 from django.core.mail import send_mail
 
@@ -11,7 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
 from news.models import Category
-
 
 # Create your models here.
 
@@ -46,6 +45,8 @@ class CustomUserManager(UserManager):
         return self._create_user(email, password, **extra_fields)
 
 
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         _('email address'),
@@ -65,8 +66,12 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+
+
     categories = models.ManyToManyField(Category, related_name='users',
                                         help_text='Категорії, які користувач відслідковує')
+
+
 
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
