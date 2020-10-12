@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static tz%}
 {% block head_title %}
     Персональний кабінет
 {% endblock %}
@@ -36,7 +36,7 @@
             <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/password.png">Пароль
             </div>
             <ul>
-                <li class="single-block"><p class="additional-info">Останній раз було змінено {last_change_date}</p>
+                <li class="single-block"><p class="additional-info">Останній раз було змінено {{ user.last_password_change|localtime|date:'d.m.Y, H:i' }}</p>
                     <button href="#">Змінити пароль</button>
                 </li>
             </ul>

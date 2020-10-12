@@ -1,9 +1,8 @@
 from django.db import models
 
-
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-from django.contrib.auth.models import  UserManager
+from django.contrib.auth.models import UserManager
 
 from django.core.mail import send_mail
 
@@ -11,6 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
 from news.models import Category
+
+
 
 # Create your models here.
 
@@ -45,8 +46,6 @@ class CustomUserManager(UserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-
-
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         _('email address'),
@@ -67,11 +66,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
 
-
     categories = models.ManyToManyField(Category, related_name='users',
                                         help_text='Категорії, які користувач відслідковує')
 
-
+    send_news_to_email = models.BooleanField('Надсилати новини на пошту',
+                                             help_text='Активуйте, якщо хочете отримувати новини на пошту',
+                                             default=False)
+    last_password_change = models.DateTimeField('Част останньої зміни паролю',
+                                                help_text='Дата і час, коли було останній раз змінено пароль, якщо не мінявся, то дата створення')
 
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
@@ -109,3 +111,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
+
+    def set_password(self, *args, **kwargs):
+        super().set_password(*args, **kwargs)
+        self.last_password_change = timezone.now()
+        self.save()
