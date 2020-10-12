@@ -3,23 +3,20 @@
 {% load i18n socialaccount static %}
 
 {% block head_title %}{% trans "Signup" %}{% endblock %}
-{% block extra_head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/mics.css' %}">
-{% endblock %}
+
 
 {% block content %}
     <div class="top-space section-block col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
         <div class="section-body">
             <div class="big-text">Реєстрація</div>
             <div class="section-header">Через соц. мережі</div>
-            <div class="single-block">
+            <div class="single-block chooseable">
                 <div class="single-content">
                     <img src="{{ MEDIA_URL }}/icons/google.png" class="icon">
                     <a href="{% provider_login_url 'google' %}">Зайти через Гугл</a>
                 </div>
             </div>
-            <div class="single-block">
+            <div class="single-block chooseable">
                 <div class="single-content">
                     <img src="{{ MEDIA_URL }}/icons/facebook.png" class="icon">
                     <a href="{% provider_login_url 'facebook' %}">Зайти з Facebook</a>

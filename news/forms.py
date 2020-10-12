@@ -9,4 +9,4 @@ class PersonalPreferencesForm(forms.Form):
         super().__init__(*args, **kwargs)
         categories = Category.objects.all()
         for category in categories:
-            self.fields[category.name] = forms.BooleanField(label=category.name, required=False)
+            self.fields[category.name] = forms.BooleanField(label=category.name, required=False, widget=forms.CheckboxInput(attrs={'class': 'shadow-default switch', 'id': 'finances'}))

@@ -187,8 +187,11 @@ li {
 	-moz-box-shadow: 0px 0px 3px 3px rgba(0,0,0,0.75);
 	box-shadow: 0px 0px 3px 3px rgba(0,0,0,0.75);
 	padding: 1% 1% 1% 2%;
-	border-left: 3px solid #D80000;
 	margin-bottom: 3%;
+}
+
+.chooseable {
+	border-left: 3px solid #D80000;
 }
 
 .single-block .single-content {
@@ -199,7 +202,7 @@ li {
 	font-size: 1em;
 }
 
-.single-block:hover {
+.chooseable:hover {
 	cursor: pointer;
 	border-left: 7px solid #D80000;
 	transition: 0.2s;

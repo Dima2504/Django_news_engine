@@ -1,17 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Personal account</title>
-</head>
-<body>
-    <h1>Personal account</h1>
-    <p>{{ user.first_name }}</p>
-    <p>{{ user.email }}</p>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_table}}
-        <button type="submit">button</button>
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+{% block head_title %}
+    Персональний кабінет
+{% endblock %}
+{% block extra_head %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/checkbox.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@500&display=swap" rel="stylesheet">
+{% endblock %}
+{% block content %}
+    <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
+        <div class="big-text">Персональний кабінет</div>
+        <div class="section-block shadow-default">
+            <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/info.png">Інформація
+                про користувача
+            </div>
+            <ul>
+                <li class="single-block"><p class="additional-info">Ім'я: {{ user.first_name }}</p></li>
+                <li class="single-block"><p class="additional-info">Ел.пошта: {{ user.email }}</p>
+                    <button>Змінити</button>
+                </li>
+                <li class="single-block"><p class="additional-info">Ваше місто: {user_city}</p>
+                    <button>Змінити</button>
+                </li>
+                <li class="single-block"><p class="additional-info">Номер мобільного: {phone_number}</p>
+                    <button>Прив'язати</button>
+                </li>
+                <li class="single-block"><p class="additional-info">Наявність преміум-підписки {premium.isPresent()}</p>
+                    <button>Підписатися</button>
+                </li>
+            </ul>
+        </div>
+        <div class="section-block shadow-default">
+            <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/password.png">Пароль
+            </div>
+            <ul>
+                <li class="single-block"><p class="additional-info">Останній раз було змінено {last_change_date}</p>
+                    <button href="#">Змінити пароль</button>
+                </li>
+            </ul>
+        </div>
+        <div class="section-block shadow-default">
+            <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/preferences.png">Уподобання
+            </div>
+            <form action="" method="post">
+            {% csrf_token %}
+                <ul>
+                    {% for field in form %}
+                        <li class="single-block"><p class="additional-info">{{ field.label }}</p>{{ field }}</li>
+                    {% endfor %}
+                    {% comment %}<li class="single-block"><p class="additional-info">Здоров'я</p><input id="finances" type="checkbox" class="shadow-default switch" checked></li>
+				<li class="single-block"><p class="additional-info">Технології</p><input id="finances" type="checkbox" class="shadow-default switch"></li>
+				<li class="single-block"><p class="additional-info">Бізнес</p><input id="finances" type="checkbox" class="shadow-default switch" checked></li>
+				<li class="single-block"><p class="additional-info">Наука</p><input id="finances" type="checkbox" class="shadow-default switch" checked></li>
+				<li class="single-block"><p class="additional-info">Розваги</p><input id="finances" type="checkbox" class="shadow-default switch"></li>
+				<li class="single-block"><p class="additional-info">Спорт</p><input id="finances" type="checkbox" class="shadow-default switch" checked></li>
+				<li class="single-block"><p class="additional-info">Фінанси</p><input id="finances" type="checkbox" class="shadow-default switch"></li>{% endcomment %}
+                    <div class="section-float-button">
+                        <button type="submit">Зберегти</button>
+                    </div>
+                </ul>
+            </form>
+        </div>
+        <div class="section-block shadow-default">
+            <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/mail.png">Розсилка
+            </div>
+            <ul>
+                <li class="single-block"><p class="additional-info">Відправка новин на пошту</p><input id="finances"
+                                                                                                       type="checkbox"
+                                                                                                       class="shadow-default switch"
+                                                                                                       checked></li>
+                <li class="single-block"><p class="additional-info">Відправка новин у Telegram (потрібен преміум)</p>
+                    <input id="finances" type="checkbox" class="shadow-default switch" disabled></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

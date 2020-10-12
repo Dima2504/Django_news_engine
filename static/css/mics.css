@@ -33,7 +33,6 @@ input:focus {
 }
 
 button {
-	margin-top: 3%;
 	padding: 10px;
 	font-size: 1.6em;
 	outline: none;
@@ -41,7 +40,6 @@ button {
 	border-bottom: 3px solid #D80000;
 	background-color: #2E2F32;
 	color: #C8C8C8;
-	border-radius: 0;
 }
 
 button:hover {
@@ -74,6 +72,6 @@ button:focus {
 }
 
 .additional-info {
-	padding: 10px 0; 
-	font-size: 1.5em;
+	font-size: 1.7em;
+	margin: 10px 0;
 }
