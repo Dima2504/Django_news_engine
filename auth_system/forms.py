@@ -2,6 +2,7 @@ from allauth.account.forms import LoginForm
 from allauth.account.forms import SignupForm
 from allauth.account.forms import ResetPasswordForm
 from allauth.account.forms import ResetPasswordKeyForm
+from allauth.account.forms import ChangePasswordForm
 
 from django import forms
 
@@ -39,6 +40,27 @@ class MyResetPasswordForm(ResetPasswordForm):
 class MyResetPasswordKeyForm(ResetPasswordKeyForm):
     def __init__(self, *args, **kwargs):
         super(MyResetPasswordKeyForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].widget = forms.PasswordInput(attrs={
+            'type': 'password',
+            'placeholder': 'Новий пароль',
+            'class': 'shadow-default'
+        })
+        self.fields['password2'].widget = forms.PasswordInput(attrs={
+            'type': 'password',
+            'placeholder': 'Повтор паролю',
+            'class': 'shadow-default'
+        })
+
+
+
+class MyChangePasswordForm(ChangePasswordForm):
+    def __init__(self, *args, **kwargs):
+        super(MyChangePasswordForm, self).__init__(*args, **kwargs)
+        self.fields['oldpassword'].widget = forms.PasswordInput(attrs={
+            'type': 'password',
+            'placeholder': 'Старий пароль',
+            'class': 'shadow-default'
+        })
         self.fields['password1'].widget = forms.PasswordInput(attrs={
             'type': 'password',
             'placeholder': 'Новий пароль',

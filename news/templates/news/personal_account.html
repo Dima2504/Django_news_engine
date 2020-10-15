@@ -37,7 +37,7 @@
             </div>
             <ul>
                 <li class="single-block"><p class="additional-info">Останній раз було змінено {{ user.last_password_change|localtime|date:'d.m.Y, H:i' }}</p>
-                    <button href="#">Змінити пароль</button>
+                    <button><a href="{% url 'account_change_password' %}">Змінити пароль</a></button>
                 </li>
             </ul>
         </div>
