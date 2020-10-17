@@ -73,7 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                                              help_text='Активуйте, якщо хочете отримувати новини на пошту',
                                              default=False)
     last_password_change = models.DateTimeField('Част останньої зміни паролю',
-                                                help_text='Дата і час, коли було останній раз змінено пароль, якщо не мінявся, то дата створення')
+                                                help_text='Дата і час, коли було останній раз змінено пароль, якщо не мінявся, то дата створення', default=timezone.now)
 
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
