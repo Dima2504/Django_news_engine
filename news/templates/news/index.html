@@ -27,15 +27,11 @@
 		</div>
 	</div>
 	<div id="sidebar-menu" class="shadow-default col-xl-2 d-none d-xl-block col-lg-2 col-md-2">
-		<li class="bold">Opodeldoc</li>
+		<li class="bold">News engine</li>
 		<ul>
-			<li>Здоров'я</li>
-			<li>Технології</li>
-			<li>Бізнес</li>
-			<li>Наука</li>
-			<li>Розваги</li>
-			<li>Спорт</li>
-			<li>Фінанси</li>
+            {% for category in categories %}
+			<li>{{ category.name|title }}</li>
+            {% endfor %}
 		</ul>
 	</div>
 	<div id="main" class="col-xl-8 offset-xl-3 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
@@ -103,10 +99,10 @@
 					Останні новини
 				</div>
 				<div class="section-body">
-                    {% for i in i|rjust:5 %}
+                    {% for article in articles %}
 					<div class="single-block chooseable">
-						<div class="single-content">Зеленський назвав несподівану причину зростання кількості хворих на COVID-19 в Україні</div>
-						<div class="single-time">16:27 четвер, 01 жовтня 2020</div>
+						<div class="single-content">{% if article.description %}{{ article.description }}{% else %}{{ article.title }}{% endif %}</div>
+						<div class="single-time">{{ article.publishedAt }}</div>
 					</div>
                     {% endfor %}
 

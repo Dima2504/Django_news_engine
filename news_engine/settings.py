@@ -136,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'uk'
 
 TIME_ZONE = 'UTC'
 
@@ -195,3 +195,6 @@ ACCOUNT_FORMS = {
     'reset_password_from_key': 'auth_system.forms.MyResetPasswordKeyForm',
     'change_password': 'auth_system.forms.MyChangePasswordForm'
 }
+
+
+NEWSAPI_KEY = os.getenv('NEWSAPI_KEY')

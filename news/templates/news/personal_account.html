@@ -48,7 +48,7 @@
             {% csrf_token %}
                 <ul>
                     {% for field in form %}
-                        <li class="single-block"><p class="additional-info">{{ field.label }}</p>{{ field }}</li>
+                        <li class="single-block"><p class="additional-info">{{ field.label|title }}</p>{{ field }}</li>
                     {% endfor %}
                     {% comment %}<li class="single-block"><p class="additional-info">Здоров'я</p><input id="finances" type="checkbox" class="shadow-default switch" checked></li>
 				<li class="single-block"><p class="additional-info">Технології</p><input id="finances" type="checkbox" class="shadow-default switch"></li>
