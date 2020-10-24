@@ -40,7 +40,8 @@ class News(models.Model):
     class Meta:
         verbose_name = 'Новина'
         verbose_name_plural = 'Новини'
-        ordering = ['published_at',]
+        ordering = ['-published_at', ]
+        unique_together = (('title', 'published_at'),)
 
     def __repr__(self):
         return self.title

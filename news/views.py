@@ -7,22 +7,14 @@ from django.conf import settings
 
 from .forms import PersonalPreferencesForm
 from .models import Category
+from .models import News
 
-from newsapi import NewsApiClient
-import datetime
 
 # Create your views here.
 
 
 def index(request):
-    newsapi = NewsApiClient(api_key=settings.NEWSAPI_KEY)
-    top_headlines = newsapi.get_top_headlines(country='ua')
-    if top_headlines['status'] == 'ok':
-        articles = top_headlines['articles']
-        for article in articles:
-            article['publishedAt'] = datetime.datetime.strptime(article['publishedAt'], '%Y-%m-%dT%H:%M:%SZ')
-    else:
-        articles = []
+    articles = News.objects.all().only('title', 'description', 'published_at', 'url_to_image')[:10]
     categories = Category.objects.all()
     return render(request, template_name='news/index.html', context={'categories': categories, 'articles': articles})
 

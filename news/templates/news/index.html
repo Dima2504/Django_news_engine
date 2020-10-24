@@ -102,7 +102,8 @@
                     {% for article in articles %}
 					<div class="single-block chooseable">
 						<div class="single-content">{% if article.description %}{{ article.description }}{% else %}{{ article.title }}{% endif %}</div>
-						<div class="single-time">{{ article.publishedAt }}</div>
+						<div class="single-time">{{ article.published_at }}</div>
+                    <div class="offset-xl-10"><img src="{{ article.url_to_image }}" alt="Помилка завантаження картинки" style="width: 170px"></div>
 					</div>
                     {% endfor %}
 
