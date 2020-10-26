@@ -15,8 +15,13 @@ from .models import News
 
 def index(request):
     articles = News.objects.all().only('title', 'description', 'published_at', 'url_to_image')[:10]
-    categories = Category.objects.all()
+    categories = Category.objects.all().only('name', 'slug')
     return render(request, template_name='news/index.html', context={'categories': categories, 'articles': articles})
+
+def category_news(request, slug):
+    category_articles = News.objects.filter(category__slug=slug).only('title', 'description', 'published_at', 'url_to_image')[:10]
+    categories = Category.objects.all().only('name', 'slug')
+    return render(request, template_name='news/index.html', context={'categories': categories, 'articles': category_articles})
 
 class PersonalAccount(LoginRequiredMixin, View):
 

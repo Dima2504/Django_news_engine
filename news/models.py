@@ -30,10 +30,10 @@ class Category(models.Model):
 class News(models.Model):
     category = models.ForeignKey(Category, related_name='news', on_delete=models.CASCADE)
     author = models.CharField(max_length=130, verbose_name='Автор')
-    title = models.CharField(max_length=200, verbose_name='Заголовок')
+    title = models.CharField(max_length=400, verbose_name='Заголовок')
     description = models.TextField(verbose_name='Опис', help_text='Короткий фрагмент')
-    url = models.URLField(verbose_name='Посилання на ресурс')
-    url_to_image = models.URLField(verbose_name='Посилання на картинку')
+    url = models.URLField(verbose_name='Посилання на ресурс', max_length=400)
+    url_to_image = models.URLField(verbose_name='Посилання на картинку', max_length=400)
     published_at = models.DateTimeField('Дата публікації')
     content = models.TextField(verbose_name='Контент')
 

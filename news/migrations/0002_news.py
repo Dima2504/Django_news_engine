@@ -16,10 +16,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('author', models.CharField(max_length=130, verbose_name='Автор')),
-                ('title', models.CharField(max_length=200, verbose_name='Заголовок')),
+                ('title', models.CharField(max_length=400, verbose_name='Заголовок')),
                 ('description', models.TextField(help_text='Короткий фрагмент', verbose_name='Опис')),
-                ('url', models.URLField(verbose_name='Посилання на ресурс')),
-                ('url_to_image', models.URLField(verbose_name='Посилання на картинку')),
+                ('url', models.URLField(verbose_name='Посилання на ресурс', max_length=400)),
+                ('url_to_image', models.URLField(verbose_name='Посилання на картинку', max_length=400)),
                 ('published_at', models.DateTimeField(verbose_name='Дата публікації')),
                 ('content', models.TextField(verbose_name='Контент')),
                 ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='news', to='news.category')),

@@ -30,7 +30,7 @@
 		<li class="bold">News engine</li>
 		<ul>
             {% for category in categories %}
-			<li>{{ category.name|title }}</li>
+                <a href="{% url 'news:category_news' category.slug %}"><li>{{ category.name|title }}</li></a>
             {% endfor %}
 		</ul>
 	</div>
