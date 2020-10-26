@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views.generic.base import View
+from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.conf import settings
@@ -14,14 +15,19 @@ from .models import News
 
 
 def index(request):
-    articles = News.objects.all().only('title', 'description', 'published_at', 'url_to_image')[:10]
+    articles = News.objects.all().only('title', 'description', 'published_at', 'url_to_image', 'slug')[:10]
     categories = Category.objects.all().only('name', 'slug')
     return render(request, template_name='news/index.html', context={'categories': categories, 'articles': articles})
 
 def category_news(request, slug):
-    category_articles = News.objects.filter(category__slug=slug).only('title', 'description', 'published_at', 'url_to_image')[:10]
+    category_articles = News.objects.filter(category__slug=slug).only('title', 'description', 'published_at', 'url_to_image', 'slug')[:10]
     categories = Category.objects.all().only('name', 'slug')
     return render(request, template_name='news/index.html', context={'categories': categories, 'articles': category_articles})
+
+class NewsDetail(DetailView):
+    model = News
+    context_object_name = 'article'
+
 
 class PersonalAccount(LoginRequiredMixin, View):
 

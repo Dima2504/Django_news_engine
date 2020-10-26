@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% endblock %}
+{% block content %}
+    <h1>{{ article.title }}</h1>
+    <p>{{ article.description }}</p>
+    <img src="{{ article.url_to_image }}" style="width: 300px" alt="">
+    <p>{{ article.author }}</p>
+    <p>{{ article.category }}</p>
+    <p><a href="{{ article.url }}"></a></p>
+
+    <a href="{% url 'news:start' %}"><button class="btn big-text">на головну</button></a>
+{% endblock %}

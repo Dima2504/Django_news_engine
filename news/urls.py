@@ -7,5 +7,5 @@ urlpatterns = [
     path('', index, name='start'),
     path('personal-account/', PersonalAccount.as_view(), name='personal_account'),
     path('<slug:slug>/', category_news, name='category_news'),
-
+    path('detail/<slug:slug>/', NewsDetail.as_view(), name='news_detail'),
 ]

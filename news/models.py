@@ -1,8 +1,8 @@
 from django.db import models
-
+import time
 from django.shortcuts import reverse
 from django.utils.text import slugify
-
+from .utils import unique_slug
 
 # Create your models here.
 
@@ -36,6 +36,7 @@ class News(models.Model):
     url_to_image = models.URLField(verbose_name='Посилання на картинку', max_length=400)
     published_at = models.DateTimeField('Дата публікації')
     content = models.TextField(verbose_name='Контент')
+    slug = models.SlugField(verbose_name='Слаг', blank=True, unique=True, default=unique_slug)
 
     class Meta:
         verbose_name = 'Новина'
