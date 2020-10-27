@@ -1,0 +1,22 @@
+.news-page-img {
+	text-align: center;
+	overflow: hidden;
+}
+
+.news-page-img img {
+	height: 100%;
+	margin-top: -10%;
+}
+
+.news-page-text {
+	font-size: 1.7em;
+	margin: 40px 0;
+}
+
+.news-page-additional-info {
+	font-size: 1.5em;
+}
+
+.right {
+	text-align: right;
+}

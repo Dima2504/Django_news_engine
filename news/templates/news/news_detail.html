@@ -1,14 +1,28 @@
 {% extends 'base.html' %}
-
-{% block title %}
+{% load static %}
+{% block head_title %}
+    {{ article.title }}
+{% endblock %}
+{% block extra_head %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/news_page.css' %}">
 {% endblock %}
 {% block content %}
-    <h1>{{ article.title }}</h1>
-    <p>{{ article.description }}</p>
-    <img src="{{ article.url_to_image }}" style="width: 300px" alt="">
-    <p>{{ article.author }}</p>
-    <p>{{ article.category }}</p>
-    <p><a href="{{ article.url }}"></a></p>
-
-    <a href="{% url 'news:start' %}"><button class="btn big-text">на головну</button></a>
+    <div class="section-block">
+        <div class="section-header">{{ article.title }}</div>
+        {% if article.url_to_image %}
+            <div class="news-page-img">
+                <img src="{{ article.url_to_image }}">
+            </div>
+        {% endif %}
+        <div>
+            <p class="news-page-text">{{ article.description }}</p>
+            <div class="right">
+                <div class="news-page-additional-info">BBC News</div>
+                <div class="news-page-additional-info">{{ article.author }}</div>
+                <a href="{{ article.url }}"><div class="news-page-additional-info">Посилання на оригінал</div></a>
+                <div class="single-time">{{ article.published_at }}</div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

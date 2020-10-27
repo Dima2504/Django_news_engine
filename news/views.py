@@ -22,11 +22,17 @@ def index(request):
 def category_news(request, slug):
     category_articles = News.objects.filter(category__slug=slug).only('title', 'description', 'published_at', 'url_to_image', 'slug')[:10]
     categories = Category.objects.all().only('name', 'slug')
-    return render(request, template_name='news/index.html', context={'categories': categories, 'articles': category_articles})
+    return render(request, template_name='news/index.html', context={'categories': categories, 'articles': category_articles, 'selected_category_slug': slug})
 
 class NewsDetail(DetailView):
     model = News
     context_object_name = 'article'
+
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['categories'] = Category.objects.all()
+        return context
 
 
 class PersonalAccount(LoginRequiredMixin, View):

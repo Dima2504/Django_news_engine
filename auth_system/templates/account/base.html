@@ -1,1 +1,14 @@
 {% extends "base.html" %}
+
+{% block body %}
+    {% block sidebar_menu %}
+    {% endblock %}
+    {% block main %}
+        {% block navbar %}
+        {% endblock %}
+        {% block content %}
+        {% endblock %}
+        {% block footer %}
+        {% endblock %}
+    {% endblock %}
+{% endblock %}
