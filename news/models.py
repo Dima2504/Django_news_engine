@@ -4,6 +4,7 @@ from django.shortcuts import reverse
 from django.utils.text import slugify
 from .utils import unique_slug
 
+
 # Create your models here.
 
 
@@ -13,6 +14,9 @@ class Category(models.Model):
     slug = models.SlugField(max_length=160, unique=True,
                             help_text='Слаг для url, генерується сам із назви, але можна задат вручну',
                             blank=True)
+    is_main = models.BooleanField('Чи головна категорія',
+                                  help_text='Головні категорії відображаються на початковій сторінці та є обов\'язковими',
+                                  default=False)
 
     class Meta:
         verbose_name = 'Категорія'
@@ -47,7 +51,6 @@ class News(models.Model):
 
     def __repr__(self):
         return self.title
-
 
     def __str__(self):
         return self.title

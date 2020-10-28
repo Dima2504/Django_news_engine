@@ -16,13 +16,13 @@ from .models import News
 
 def index(request):
     articles = News.objects.all().only('title', 'description', 'published_at', 'url_to_image', 'slug')[:10]
-    categories = Category.objects.all().only('name', 'slug')
+    categories = Category.objects.filter(is_main=True).only('name', 'slug')
     return render(request, template_name='news/index.html', context={'categories': categories, 'articles': articles})
 
 def category_news(request, slug):
     category_articles = News.objects.filter(category__slug=slug).only('title', 'description', 'published_at', 'url_to_image', 'slug')[:10]
-    categories = Category.objects.all().only('name', 'slug')
-    return render(request, template_name='news/index.html', context={'categories': categories, 'articles': category_articles, 'selected_category_slug': slug})
+    categories = Category.objects.filter(is_main=True).only('name', 'slug')
+    return render(request, template_name='news/index.html', context={'categories': categories, 'articles': category_articles, 'selected_category_slug': slug, 'selected_category_name': Category.objects.get(slug=slug).name})
 
 class NewsDetail(DetailView):
     model = News
@@ -41,15 +41,14 @@ class PersonalAccount(LoginRequiredMixin, View):
         obj = request.user
         form = PersonalPreferencesForm()
         for category in obj.categories.all():
-            form.initial[category.name] = True
+            form.initial[category.slug] = True
         return render(request, template_name='news/personal_account.html', context={'user': obj, 'form': form})
 
     def post(self, request):
         user = request.user
         form = PersonalPreferencesForm(request.POST)
         if form.is_valid():
-            categories = Category.objects.filter(name__in=form.changed_data)
-            user.categories.clear()
+            categories = Category.objects.filter(slug__in=form.changed_data)
             user.categories.set(categories, clear=True)
             messages.success(request, 'Дані успішно збережені!')
         return redirect('news:start')
