@@ -15,20 +15,27 @@ from .models import News
 
 
 def index(request):
-    articles = News.objects.all().only('title', 'description', 'published_at', 'url_to_image', 'slug')[:10]
+    required_fields = ('title', 'description', 'published_at', 'url_to_image', 'slug')
+    if request.user.is_anonymous:
+        articles = News.objects.all().only(*required_fields)[:10]
+    else:
+        articles = News.objects.all().only(*required_fields).difference(request.user.checked_news.all().only(*required_fields)).order_by('-published_at')[:10]
+
     categories = Category.objects.filter(is_main=True).only('name', 'slug')
     return render(request, template_name='news/index.html', context={'categories': categories, 'articles': articles})
 
 def category_news(request, slug):
-    category_articles = News.objects.filter(category__slug=slug).only('title', 'description', 'published_at', 'url_to_image', 'slug')[:10]
+    required_fields = ('title', 'description', 'published_at', 'url_to_image', 'slug')
+    if request.user.is_anonymous:
+        category_articles = News.objects.filter(category__slug=slug).only(*required_fields)[:10]
+    else:
+        category_articles = News.objects.filter(category__slug=slug).only(*required_fields).difference(request.user.checked_news.filter(category__slug=slug).only(*required_fields)).order_by('-published_at')[:10]
     categories = Category.objects.filter(is_main=True).only('name', 'slug')
     return render(request, template_name='news/index.html', context={'categories': categories, 'articles': category_articles, 'selected_category_slug': slug, 'selected_category_name': Category.objects.get(slug=slug).name})
 
 class NewsDetail(DetailView):
     model = News
     context_object_name = 'article'
-
-
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['categories'] = Category.objects.all()
