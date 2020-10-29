@@ -10,6 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
 from news.models import Category
+from news.models import News
+from news.models import History
 
 
 
@@ -75,6 +77,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_password_change = models.DateTimeField('Част останньої зміни паролю',
                                                 help_text='Дата і час, коли було останній раз змінено пароль, якщо не мінявся, то дата створення', default=timezone.now)
 
+    checked_news = models.ManyToManyField(News, through=History)
+
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -116,3 +120,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().set_password(*args, **kwargs)
         self.last_password_change = timezone.now()
         self.save()
+
+    def __str__(self):
+        return self.email
