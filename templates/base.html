@@ -69,7 +69,7 @@
             <ul>
                 {% for category in categories %}
                     <a href="{% url 'news:category_news' category.slug %}">
-                        <li class="{% if category.slug == selected_category_slug %}sidebar-active{% endif %}">{{ category.name|title }}</li>
+                        <li class="{% if category.slug == selected_category_slug %}sidebar-active{% endif %}">{{ category.name|capfirst }}</li>
                     </a>
                 {% endfor %}
             </ul>

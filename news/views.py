@@ -38,11 +38,12 @@ class NewsDetail(DetailView):
 class PersonalAccount(LoginRequiredMixin, View):
 
     def get(self, request):
-        obj = request.user
+        user = request.user
         form = PersonalPreferencesForm()
-        for category in obj.categories.all():
+        for category in user.categories.filter(is_main=True).only('slug'):
             form.initial[category.slug] = True
-        return render(request, template_name='news/personal_account.html', context={'user': obj, 'form': form})
+        form.initial['send_news_to_email'] = user.send_news_to_email
+        return render(request, template_name='news/personal_account.html', context={'user': user, 'form': form})
 
     def post(self, request):
         user = request.user
@@ -50,5 +51,8 @@ class PersonalAccount(LoginRequiredMixin, View):
         if form.is_valid():
             categories = Category.objects.filter(slug__in=form.changed_data)
             user.categories.set(categories, clear=True)
+            user.send_news_to_email = form.cleaned_data['send_news_to_email']
+            user.save()
             messages.success(request, 'Дані успішно збережені!')
         return redirect('news:start')
+

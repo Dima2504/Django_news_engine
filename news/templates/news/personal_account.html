@@ -50,37 +50,39 @@
                         </li>
                     </ul>
                 </div>
-                <div class="section-block shadow-default">
-                    <div class="section-header"><img class="icon-personal-info"
-                                                     src="{{ MEDIA_URL }}icons/preferences.png">Уподобання
-                    </div>
-                    <form action="" method="post">
-                        {% csrf_token %}
+                <form action="" method="post">
+                    {% csrf_token %}
+
+                    <div class="section-block shadow-default">
+                        <div class="section-header"><img class="icon-personal-info"
+                                                         src="{{ MEDIA_URL }}icons/preferences.png">Уподобання
+                        </div>
                         <ul>
                             {% for field in form %}
-                                <li class="single-block"><p
-                                        class="additional-info">{{ field.label|title }}</p>{{ field }}</li>
+                                {% if field.label != 'send_news_to_email' %}
+                                    <li class="single-block"><p
+                                            class="additional-info">{{ field.label|capfirst }}</p>{{ field }}</li>
+                                {% endif %}
                             {% endfor %}
-                            <div class="section-float-button">
-                                <button type="submit">Зберегти</button>
-                            </div>
                         </ul>
-                    </form>
-                </div>
-                <div class="section-block shadow-default">
-                    <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/mail.png">Розсилка
                     </div>
-                    <ul>
-                        <li class="single-block"><p class="additional-info">Відправка новин на пошту</p><input
-                                id="finances"
-                                type="checkbox"
-                                class="shadow-default switch"
-                                checked></li>
-                        <li class="single-block"><p class="additional-info">Відправка новин у Telegram (потрібен
-                            преміум)</p>
-                            <input id="finances" type="checkbox" class="shadow-default switch" disabled></li>
-                    </ul>
-                </div>
+                    <div class="section-block shadow-default">
+                        <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/mail.png">Розсилка
+                        </div>
+                        <ul>
+                            <li class="single-block"><p
+                                    class="additional-info">Отримувати вподобання на
+                                пошту</p>{{ form.send_news_to_email }}
+                            </li>
+                            <li class="single-block"><p class="additional-info">Відправка новин у Telegram (потрібен
+                                преміум)</p>
+                                <input id="finances" type="checkbox" class="shadow-default switch" disabled></li>
+                        </ul>
+                        <div class="section-float-button">
+                            <button type="submit">Зберегти все</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         {% endblock %}
     {% endblock %}

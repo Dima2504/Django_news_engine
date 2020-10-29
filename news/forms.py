@@ -10,3 +10,5 @@ class PersonalPreferencesForm(forms.Form):
         categories = Category.objects.filter(is_main=True)
         for category in categories:
             self.fields[category.slug] = forms.BooleanField(label=category.name, required=False, widget=forms.CheckboxInput(attrs={'class': 'shadow-default switch', 'id': 'finances'}))
+        self.fields['send_news_to_email'] = forms.BooleanField(label='send_news_to_email', required=False, widget=forms.CheckboxInput(attrs={'class': 'shadow-default switch', 'id': 'finances'}))
+
