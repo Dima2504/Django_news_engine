@@ -9,6 +9,7 @@ from django.conf import settings
 from .forms import PersonalPreferencesForm
 from .models import Category
 from .models import News
+from .models import History
 
 
 # Create your views here.
@@ -36,10 +37,17 @@ def category_news(request, slug):
 class NewsDetail(DetailView):
     model = News
     context_object_name = 'article'
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['categories'] = Category.objects.all()
         return context
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        if not request.user.is_anonymous:
+            History.objects.create(user=request.user, news=self.object)
+        return response
 
 
 class PersonalAccount(LoginRequiredMixin, View):
