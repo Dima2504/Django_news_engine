@@ -1,9 +1,7 @@
 from django.db import models
-import time
-from django.shortcuts import reverse
 from django.utils.text import slugify
 from .utils import unique_slug
-
+from django.conf import settings
 
 # Create your models here.
 
@@ -54,3 +52,18 @@ class News(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class History(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    news = models.ForeignKey(News, on_delete=models.CASCADE)
+    checked_at = models.DateTimeField(verbose_name='Дата і час перегляду новини', auto_now_add=True)
+    is_checked_on_site = models.BooleanField(verbose_name='Чи була переглянута на сайті', default=True)
+    is_checked_on_email = models.BooleanField(verbose_name='Чи була переглянута на пошті', default=False)
+
+    class Meta:
+        verbose_name = 'Історія перегляду новин'
+        verbose_name_plural = 'Історії перегляду новин'
+
+    def __str__(self):
+        return 'Новина "{}" була пегелянута користувачем "{}" в: {}'.format(self.news, self.user, self.checked_at.ctime())
