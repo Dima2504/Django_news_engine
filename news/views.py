@@ -6,33 +6,48 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.conf import settings
 
+from django.http import JsonResponse
+
 from .forms import PersonalPreferencesForm
+
 from .models import Category
 from .models import News
 from .models import History
 
+from django.core.paginator import Paginator
+from .utils import NewsListAjaxMixin
+
 
 # Create your views here.
 
+class AllNews(NewsListAjaxMixin, View):
+    def get(self, request):
+        if request.user.is_anonymous:
+            self.articles = News.objects.all().values(*self.required_fields)
+        else:
+            self.articles = News.objects.all().values(*self.required_fields).difference(
+                request.user.checked_news.all().values(*self.required_fields)).order_by('-published_at')
 
-def index(request):
-    required_fields = ('title', 'description', 'published_at', 'url_to_image', 'slug')
-    if request.user.is_anonymous:
-        articles = News.objects.all().only(*required_fields)[:10]
-    else:
-        articles = News.objects.all().only(*required_fields).difference(request.user.checked_news.all().only(*required_fields)).order_by('-published_at')[:10]
+        self.categories = Category.objects.filter(is_main=True).only('name', 'slug')
+        return super().get(request)
 
-    categories = Category.objects.filter(is_main=True).only('name', 'slug')
-    return render(request, template_name='news/index.html', context={'categories': categories, 'articles': articles})
 
-def category_news(request, slug):
-    required_fields = ('title', 'description', 'published_at', 'url_to_image', 'slug')
-    if request.user.is_anonymous:
-        category_articles = News.objects.filter(category__slug=slug).only(*required_fields)[:10]
-    else:
-        category_articles = News.objects.filter(category__slug=slug).only(*required_fields).difference(request.user.checked_news.filter(category__slug=slug).only(*required_fields)).order_by('-published_at')[:10]
-    categories = Category.objects.filter(is_main=True).only('name', 'slug')
-    return render(request, template_name='news/index.html', context={'categories': categories, 'articles': category_articles, 'selected_category_slug': slug, 'selected_category_name': Category.objects.get(slug=slug).name})
+class CategoryNews(NewsListAjaxMixin, View):
+
+    def get(self, request, slug):
+
+        if request.user.is_anonymous:
+            self.articles = News.objects.filter(category__slug=slug).values(*self.required_fields)
+        else:
+            self.articles = News.objects.filter(category__slug=slug).values(*self.required_fields).difference(
+                request.user.checked_news.filter(category__slug=slug).values(*self.required_fields)).order_by(
+                '-published_at')
+
+        self.categories = Category.objects.filter(is_main=True).only('name', 'slug')
+        self.addition_context_data = {'selected_category_slug': slug,
+                                      'selected_category_name': Category.objects.get(slug=slug).name}
+        return super().get(request)
+
 
 class NewsDetail(DetailView):
     model = News
@@ -70,4 +85,3 @@ class PersonalAccount(LoginRequiredMixin, View):
             user.save()
             messages.success(request, 'Дані успішно збережені!')
         return redirect('news:start')
-

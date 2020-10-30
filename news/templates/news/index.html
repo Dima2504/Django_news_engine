@@ -6,7 +6,7 @@
 {% endblock %}
 {% block extra_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}">
 {% endblock %}
 
 
@@ -26,15 +26,16 @@
         <div class="section-header">
             {% if selected_category_slug %}
                 Останні новини в категорії "{{ selected_category_name }}"
-                {% else  %}
+            {% else %}
                 Список усіх останніх новин
             {% endif %}
         </div>
-        <div class="section-body">
+        <div class="section-body" id="news-container">
             {% for article in articles %}
                 <a href="{% url 'news:news_detail' article.slug %}">{% include 'news/snippets/news_block.html' %}</a>
             {% endfor %}
         </div>
     </div>
+    <script type="text/javascript" src="{% static 'scripts/ajax_content.js' %}"></script>
 {% endblock %}
 

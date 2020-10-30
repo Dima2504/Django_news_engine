@@ -203,6 +203,7 @@ ACCOUNT_FORMS = {
     'change_password': 'auth_system.forms.MyChangePasswordForm'
 }
 
+NEWS_PER_PAGE = 10
 
 NEWSAPI_KEY = os.getenv('NEWSAPI_KEY')
 NEWSAPI_TIMEDELTA_MINUTES = 5

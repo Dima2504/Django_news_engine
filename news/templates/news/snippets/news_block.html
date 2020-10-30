@@ -2,7 +2,7 @@
     <div class="flex">
         <div class="single-content">{{ article.title }}</div>
         {% if article.url_to_image %}
-            <img class="single-news-img d-none d-xl-block" src="{{ article.url_to_image }}">
+            <img class="single-news-img d-none d-xl-block" src="{{ article.url_to_image }}" alt="Помилка завантаження картинки">
         {% endif %}
     </div>
     <div class="single-time">{{ article.published_at }}
