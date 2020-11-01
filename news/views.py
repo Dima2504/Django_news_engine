@@ -14,7 +14,6 @@ from .models import Category
 from .models import News
 from .models import History
 
-from django.core.paginator import Paginator
 from .utils import NewsListAjaxMixin
 
 

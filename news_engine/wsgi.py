@@ -49,4 +49,4 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'news_engine.settings')
 
 application = get_wsgi_application()
 
-Thread(target=pick_top_headlines).start()
+#Thread(target=pick_top_headlines).start()
