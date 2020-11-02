@@ -73,7 +73,7 @@ class PersonalAccount(LoginRequiredMixin, View):
         for category in user.categories.filter(is_main=True).only('slug'):
             form.initial[category.slug] = True
         form.initial['send_news_to_email'] = user.send_news_to_email
-        return render(request, template_name='news/personal_account.html', context={'user': user, 'form': form})
+        return render(request, template_name='news/personal_account.html', context={'form': form})
 
     def post(self, request):
         user = request.user

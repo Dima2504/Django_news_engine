@@ -25,6 +25,7 @@
             <div class="section-header">Інший варіант</div>
             <form action="{% url 'account_signup' %}" method="POST">
                 {% csrf_token %}
+                {% include 'account/snippets/form_errors.html' %}
                 <div class="single-content">
                     {{ form.email }}
                 </div>

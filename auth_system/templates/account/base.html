@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block body %}
+    {% block modal_window %}
+        {{ block.super }}
+        {% endblock %}
+    {% block info_messages %}
+        {{ block.super }}
+        {% endblock %}
     {% block sidebar_menu %}
     {% endblock %}
     {% block main %}

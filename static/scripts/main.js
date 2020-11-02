@@ -23,4 +23,4 @@ document.getElementById('navbar-close').onclick = function navbar_toggle() {
 	if(main.style.width <= 789.33){
 		sidebar.classList.toggle('active');
 	}
-}
+};

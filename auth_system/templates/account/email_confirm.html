@@ -20,6 +20,7 @@
                 </div>
                 <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
                     {% csrf_token %}
+                    {% include 'account/snippets/form_errors.html' %}
                     <div class="section-float-button">
                         <button class="shadow-default">Підтвердити</button>
                     </div>
