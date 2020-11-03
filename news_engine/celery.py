@@ -11,8 +11,12 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-    f'pick-news-every-{settings.NEWSAPI_TIMEDELTA_MINUTES}-minutes': {
+    f'pick-news-every-{settings.NEWS_API_REQUEST_TIMEDELTA_MINUTES}-minutes': {
         'task': 'news.tasks.pick_beat_news',
-        'schedule': crontab(minute=f'*/{settings.NEWSAPI_TIMEDELTA_MINUTES}'),
+        'schedule': crontab(minute=f'*/{settings.NEWS_API_REQUEST_TIMEDELTA_MINUTES}'),
+    },
+    f'clear-db-every-{settings.NEWS_CLEAR_DB_TIMEDELTA_DAYS}-days': {
+        'task': 'news.task.clear_db',
+        'schedule': crontab(minute=0, hour=f'*/{24*settings.NEWS_CLEAR_DB_TIMEDELTA_DAYS}'),
     },
 }

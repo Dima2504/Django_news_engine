@@ -77,7 +77,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_password_change = models.DateTimeField('Част останньої зміни паролю',
                                                 help_text='Дата і час, коли було останній раз змінено пароль, якщо не мінявся, то дата створення', default=timezone.now)
 
-    checked_news = models.ManyToManyField(News, through=History)
+    checked_news = models.ManyToManyField(News, through=History, related_name='users_saw')
 
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
