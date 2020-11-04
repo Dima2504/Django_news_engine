@@ -5,10 +5,7 @@ from django.conf import settings
 from django.utils.timezone import make_aware
 import datetime
 
-
 from auth_system.models import User
-from allauth.account.models import EmailAddress
-from .tasks import send_one_news_to_user
 
 
 def pick_top_headlines():
@@ -27,18 +24,21 @@ def pick_top_headlines():
                                 description=article['description'] or '',
                                 url=article['url'] or '',
                                 url_to_image=article['urlToImage'] or '',
-                                published_at=make_aware(datetime.datetime.strptime(article['publishedAt'], '%Y-%m-%dT%H:%M:%SZ')),
-                                content=article['content'] or '',)
+                                published_at=make_aware(
+                                    datetime.datetime.strptime(article['publishedAt'], '%Y-%m-%dT%H:%M:%SZ')),
+                                content=article['content'] or '', )
                 news.append(one_news)
             News.objects.bulk_create(news, ignore_conflicts=True)
 
 
 def delete_old_news_from_db():
-    News.objects.filter(id__in=list(News.objects.values_list('pk', flat=True)[settings.NEWS_TO_SAVE_AFTER_CLEAN:])).delete()
+    News.objects.filter(
+        id__in=list(News.objects.values_list('pk', flat=True)[settings.NEWS_TO_SAVE_AFTER_CLEAN:])).delete()
 
 
-def get_users_needed_news_contained_into_signatures():
+def get_users_needed_news_contained_into_signatures(celery_task):
     """
+    :arg celery_task - Task instance object
     :return: dictionary where key - user id, values - list of ready celery signatures from task 'send_one_news_to_user'.
     """
     tasks = {}
@@ -47,14 +47,18 @@ def get_users_needed_news_contained_into_signatures():
         des = news.description
         users_ids_emails = User.objects.exclude(checked_news=news).filter(send_news_to_email=True,
                                                                           categories=news.category).values_list('id',
-                                                                                                                'email')
+                                                                                                                'email',
+                                                                                                                'countdown_to_email')
         if users_ids_emails:
-            for user_id, user_email in users_ids_emails:
+            for user_id, user_email, countdown in users_ids_emails:
                 if not user_id in tasks:
                     tasks[user_id] = [
-                        send_one_news_to_user.signature((title, des, news.id, user_id, user_email), countdown=10,
-                                                        immutable=True), ]
+                        celery_task.signature((title, des, news.id, user_id, user_email),
+                                              countdown=countdown.seconds,
+                                              immutable=True), ]
                 else:
                     tasks[user_id].append(
-                        send_one_news_to_user.signature((title, des, news.id, user_id, user_email), countdown=10,
-                                                        immutable=True))
+                        celery_task.signature((title, des, news.id, user_id, user_email),
+                                              countdown=countdown.seconds,
+                                              immutable=True))
+    return tasks

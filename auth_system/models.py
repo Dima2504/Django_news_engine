@@ -8,6 +8,7 @@ from django.core.mail import send_mail
 
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
+import datetime
 
 from news.models import Category
 from news.models import News
@@ -78,6 +79,8 @@ class User(AbstractBaseUser, PermissionsMixin):
                                                 help_text='Дата і час, коли було останній раз змінено пароль, якщо не мінявся, то дата створення', default=timezone.now)
 
     checked_news = models.ManyToManyField(News, through=History, related_name='users_saw')
+
+    countdown_to_email = models.DurationField(verbose_name='Відрізок часу між відправкою новин на пошту', help_text='Найменший період між відправленнями новин на пошту', default=datetime.timedelta(minutes=60))
 
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'

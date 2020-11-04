@@ -29,5 +29,5 @@ def send_one_news_to_user(subject, message, news_id, user_id, user_email):
 
 @celery_app.task
 def send():
-    tasks = get_users_needed_news_contained_into_signatures()
+    tasks = get_users_needed_news_contained_into_signatures(send_one_news_to_user)
     group([chain(*t) for t in tasks.values()]).apply_async()
