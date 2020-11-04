@@ -59,7 +59,7 @@
                         </div>
                         <ul>
                             {% for field in form %}
-                                {% if field.label != 'send_news_to_email' %}
+                                {% if field.label != 'send_news_to_email' and field.label != 'countdown_to_email' %}
                                     <li class="single-block"><p
                                             class="additional-info">{{ field.label|capfirst }}</p>{{ field }}</li>
                                 {% endif %}
@@ -70,6 +70,12 @@
                         <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/mail.png">Розсилка
                         </div>
                         <ul>
+                            <li class="single-block">
+                                <p class="additional-info">Період між відправкою новин на пошту, у хвилинах!</p>
+                                <div class="single-content">
+                                    {{ form.countdown_to_email }}
+                                </div>
+                            </li>
                             <li class="single-block"><p
                                     class="additional-info">Отримувати вподобання на
                                 пошту</p>{{ form.send_news_to_email }}

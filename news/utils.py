@@ -5,6 +5,8 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
 
+from allauth.account.models import EmailAddress
+from allauth.account.utils import send_email_confirmation
 
 def unique_slug():
     return str(time.time()).replace('.', '')
@@ -24,3 +26,13 @@ class NewsListAjaxMixin(View):
             articles = Paginator(self.articles, settings.NEWS_PER_PAGE).get_page(1).object_list
             return render(request, template_name='news/index.html',
                           context={'categories': self.categories, 'articles': articles, **self.addition_context_data})
+
+
+class VerifiedEmailRequiredMixin:
+    def dispatch(self, request, *args, **kwargs):
+        if not EmailAddress.objects.filter(user=request.user,
+                                           verified=True).exists():
+            send_email_confirmation(request, request.user)
+            return render(request,
+                          'account/verified_email_required.html')
+        return super().dispatch(request, *args, **kwargs)
