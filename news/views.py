@@ -4,9 +4,8 @@ from django.views.generic.base import View
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.conf import settings
 
-from django.http import JsonResponse
+from allauth.account.decorators import verified_email_required
 
 from .forms import PersonalPreferencesForm
 
@@ -15,6 +14,7 @@ from .models import News
 from .models import History
 
 from .utils import NewsListAjaxMixin
+from .utils import VerifiedEmailRequiredMixin
 
 
 # Create your views here.
@@ -64,7 +64,7 @@ class NewsDetail(DetailView):
         return response
 
 
-class PersonalAccount(LoginRequiredMixin, View):
+class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
 
     def get(self, request):
         user = request.user
