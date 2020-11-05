@@ -220,3 +220,64 @@ CELERY_RESULT_BACKEND = 'redis://'+ REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+        'db':{
+            'format': '{levelname} {asctime} {duration} {params}\n{sql}',
+            'style': '{',
+        },
+        'celery_task': {
+            '()': 'celery.app.log.TaskFormatter',
+            'format': '[%(asctime)s: %(levelname)s/%(processName)s] %(task_name)s[%(task_id)s]: %(message)s',
+        }
+    },
+    'handlers': {
+        'file_views': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'DEBUG',
+            'filename': os.path.join(BASE_DIR, 'logs/news-views.log'),
+            'formatter': 'verbose',
+            'maxBytes': 1024*1024*10,
+        },
+        'file_db': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'DEBUG',
+            'filename': os.path.join(BASE_DIR, 'logs/db/sql.log'),
+            'formatter': 'db',
+            'maxBytes': 1024*1024*5,
+            'backupCount': 10,
+        },
+        'celery_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'DEBUG',
+            'filename': os.path.join(BASE_DIR, 'logs/celery/tasks.log'),
+            'formatter': 'celery_task',
+            'maxBytes': 1024*1024*5,
+            'backupCount': 10,
+        }
+    },
+    'loggers': {
+        'news.views': {
+            'handlers': ['file_views', ],
+            'level': 'DEBUG',
+        },
+        'django.db.backends':{
+            'handlers': ['file_db', ],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'news.tasks': {
+            'handlers': ['celery_file', ],
+            'level': 'DEBUG',
+        }
+    }
+}

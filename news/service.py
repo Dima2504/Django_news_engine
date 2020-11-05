@@ -7,12 +7,15 @@ import datetime
 
 from auth_system.models import User
 
+import logging
+logger = logging.getLogger('news.tasks')
 
 def pick_top_headlines():
     newsapi = NewsApiClient(api_key=settings.NEWS_API_KEY)
     for category in categories:
         top = newsapi.get_top_headlines(country='ua',
                                         category=category)
+        logger.info(f'receive top headlines in {category}')
         category_obj = Category.objects.get(slug=category)
         if top['status'] == 'ok':
             articles = top['articles']
@@ -29,11 +32,13 @@ def pick_top_headlines():
                                 content=article['content'] or '', )
                 news.append(one_news)
             News.objects.bulk_create(news, ignore_conflicts=True)
+            logger.info(f'save received news in {category} to db')
 
 
 def delete_old_news_from_db():
     News.objects.filter(
         id__in=list(News.objects.values_list('pk', flat=True)[settings.NEWS_TO_SAVE_AFTER_CLEAN:])).delete()
+    logger.info('Successful delete')
 
 
 def get_users_needed_news_contained_into_signatures(celery_task):
