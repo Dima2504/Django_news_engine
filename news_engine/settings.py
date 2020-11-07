@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'auth_system.apps.AuthSystemConfig',
     'news.apps.NewsConfig',
     'silk',
+    'django_celery_beat',
 ]
 
 AUTHENTICATION_BACKENDS = [

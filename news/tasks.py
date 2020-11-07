@@ -27,14 +27,12 @@ def clear_db():
     delete_old_news_from_db()
 
 
-
 @celery_app.task
 def send_one_news_to_user(subject, message, news_id, user_id, user_email):
     send_mail(subject, message, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[user_email,])
     logger.info(f'User {user_id} receive news {news_id} on email')
     History.objects.create(user_id=user_id, news_id=news_id, is_checked_on_site=False, is_checked_on_email=True)
     logger.info(f'Create relationship with user {user_id} and news {news_id}')
-
 
 
 @celery_app.task(bind=True)
