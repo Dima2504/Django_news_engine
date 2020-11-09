@@ -1,5 +1,8 @@
 from django.db import models
 
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from django.contrib.auth.models import AbstractBaseUser
@@ -11,6 +14,7 @@ from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 import datetime
+import json
 
 from news.models import Category
 from news.models import News
@@ -136,7 +140,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def _set_or_create_periodic_task(self, enabled=True):
         if not self.email_periodic_task:
             interval, _ = self._get_or_create_interval()
-            self.email_periodic_task = PeriodicTask.objects.create(interval=interval, name=f'"{self.email}" periodic task', task='', enabled=enabled)
+            self.email_periodic_task = PeriodicTask.objects.create(interval=interval, name=f'"{self.email}" PT',
+                                                                   task='news.tasks.send_one_news_to_one_user_task',
+                                                                   args=json.dumps([self.id]), enabled=enabled)
         else:
             self.email_periodic_task.enabled = enabled
             self.email_periodic_task.save()
@@ -164,10 +170,12 @@ class User(AbstractBaseUser, PermissionsMixin):
             self.email_periodic_task.interval, _ = self._get_or_create_interval()
             self.email_periodic_task.save()
 
-    def delete(self, *args, **kwargs):
-        self.email_periodic_task.delete()
-        super().delete()
-
-
     def __str__(self):
         return self.email
+
+
+@receiver(post_delete, sender=User)
+def delete_user_email_task(sender, instance, using, **kwargs):
+    if instance.email_periodic_task:
+        temp = instance.email_periodic_task
+        temp.delete()
