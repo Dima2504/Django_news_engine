@@ -1,5 +1,7 @@
 from django.db import models
 
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
+
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import UserManager
@@ -13,10 +15,6 @@ import datetime
 from news.models import Category
 from news.models import News
 from news.models import History
-
-
-
-# Create your models here.
 
 
 class CustomUserManager(UserManager):
@@ -69,27 +67,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
 
-    categories = models.ManyToManyField(Category, related_name='users',
-                                        help_text='Категорії, які користувач відслідковує')
-
-    send_news_to_email = models.BooleanField('Надсилати новини на пошту',
-                                             help_text='Активуйте, якщо хочете отримувати новини на пошту',
-                                             default=False)
-    last_password_change = models.DateTimeField('Част останньої зміни паролю',
-                                                help_text='Дата і час, коли було останній раз змінено пароль, якщо не мінявся, то дата створення', default=timezone.now)
-
-    checked_news = models.ManyToManyField(News, through=History, related_name='users_saw')
-
-    countdown_to_email = models.DurationField(verbose_name='Відрізок часу між відправкою новин на пошту', help_text='Найменший період між відправленнями новин на пошту', default=datetime.timedelta(minutes=60))
-
-    objects = CustomUserManager()
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
-
-    class Meta:
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
-
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
@@ -104,6 +81,34 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+
+    categories = models.ManyToManyField(Category, related_name='users',
+                                        help_text='Категорії, які користувач відслідковує', blank=True)
+
+    last_password_change = models.DateTimeField('Част останньої зміни паролю',
+                                                help_text='Дата і час, коли було останній раз змінено пароль, якщо не мінявся, то дата створення',
+                                                default=timezone.now)
+    checked_news = models.ManyToManyField(News, through=History, related_name='users_saw')
+
+    email_periodic_task = models.OneToOneField(PeriodicTask, verbose_name="Зв'язана задача по відправці новин на пошту",
+                                               on_delete=models.SET_NULL, null=True, blank=True)
+
+    _send_news_to_email = models.BooleanField('Надсилати новини на пошту',
+                                              help_text='Активуйте, якщо хочете отримувати новини на пошту',
+                                              default=False)
+
+    _countdown_to_email = models.DurationField(verbose_name='Відрізок часу між відправкою новин на пошту',
+                                               help_text='Найменший період між відправленнями новин на пошту',
+                                               default=datetime.timedelta(minutes=60))
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    class Meta:
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
 
     def get_full_name(self):
         full_name = '%s %s' % (self.first_name, self.last_name)
@@ -123,6 +128,46 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().set_password(*args, **kwargs)
         self.last_password_change = timezone.now()
         self.save()
+
+    def _get_or_create_interval(self):
+        return IntervalSchedule.objects.get_or_create(every=self._countdown_to_email.seconds / 60,
+                                                      period=IntervalSchedule.MINUTES)
+
+    def _set_or_create_periodic_task(self, enabled=True):
+        if not self.email_periodic_task:
+            interval, _ = self._get_or_create_interval()
+            self.email_periodic_task = PeriodicTask.objects.create(interval=interval, name=f'"{self.email}" periodic task', task='', enabled=enabled)
+        else:
+            self.email_periodic_task.enabled = enabled
+            self.email_periodic_task.save()
+
+    send_news_to_email = property()
+    countdown_to_email = property()
+
+    @send_news_to_email.getter
+    def send_news_to_email(self):
+        return self._send_news_to_email
+
+    @send_news_to_email.setter
+    def send_news_to_email(self, is_send):
+        self._send_news_to_email = is_send
+        self._set_or_create_periodic_task(enabled=is_send)
+
+    @countdown_to_email.getter
+    def countdown_to_email(self):
+        return self._countdown_to_email
+
+    @countdown_to_email.setter
+    def countdown_to_email(self, timedelta):
+        self._countdown_to_email = timedelta
+        if self.email_periodic_task:
+            self.email_periodic_task.interval, _ = self._get_or_create_interval()
+            self.email_periodic_task.save()
+
+    def delete(self, *args, **kwargs):
+        self.email_periodic_task.delete()
+        super().delete()
+
 
     def __str__(self):
         return self.email

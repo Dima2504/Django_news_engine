@@ -92,8 +92,9 @@ class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
         if form.is_valid():
             categories = Category.objects.filter(slug__in=form.changed_data)
             user.categories.set(categories, clear=True)
-            user.send_news_to_email = form.cleaned_data['send_news_to_email']
             user.countdown_to_email = datetime.timedelta(minutes=int(form.cleaned_data['countdown_to_email']))
+            user.send_news_to_email = form.cleaned_data['send_news_to_email']
+
             user.save()
             messages.success(request, 'Дані успішно збережені!')
         return redirect('news:start')
