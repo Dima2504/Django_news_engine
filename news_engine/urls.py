@@ -29,7 +29,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', news_redirect),
     path('news/', include('news.urls')),
-    path('silk/', include('silk.urls'))
+    path('silk/', include('silk.urls')),
+    path('api/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()
