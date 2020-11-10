@@ -25,7 +25,7 @@ SECRET_KEY = '3@y4zujt-xm+v9#t7rc62+k5_65a0%=#dkm@n)4fh)5qvy2!d-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.telegram',
 
     'auth_system.apps.AuthSystemConfig',
     'news.apps.NewsConfig',
@@ -184,6 +185,11 @@ LOGIN_REDIRECT_URL = 'news:start'
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
+        'APP': {
+            'client_id': os.getenv('GOOGLE_AUTH_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_AUTH_SECRET'),
+            'key': '',
+        },
         'SCOPE': [
             'profile',
             'email',
@@ -193,9 +199,20 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     },
     'facebook': {
-
+        'APP': {
+            'client_id': os.getenv('FACEBOOK_AUTH_CLIENT_ID'),
+            'secret': os.getenv('FACEBOOK_AUTH_SECRET'),
+            'key': '',
+        },
+        'SCOPE': ['email', ],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'METHOD': 'oauth2',
     },
+    'telegram': {
+        'TOKEN': os.getenv('TELEGRAM_AUTH_BOT_TOKEN'),
+    }
 }
+SOCIALACCOUNT_QUERY_EMAIL = True
 
 ACCOUNT_FORMS = {
     'login': 'auth_system.forms.MyLoginForm',
