@@ -16,6 +16,9 @@ from .utils import NewsListAjaxMixin
 from .utils import VerifiedEmailRequiredMixin
 
 import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -23,9 +26,11 @@ class AllNews(NewsListAjaxMixin, View):
     def get(self, request):
         if request.user.is_anonymous:
             self.articles = News.objects.all().values(*self.required_fields)
+            logger.debug('Anonymous user in Allnews')
         else:
             self.articles = News.objects.all().values(*self.required_fields).difference(
                 request.user.checked_news.all().values(*self.required_fields)).order_by('-published_at')
+            logger.debug(f'User: {request.user.id} in Allnews')
 
         self.categories = Category.objects.filter(is_main=True).only('name', 'slug')
         return super().get(request)
@@ -37,10 +42,12 @@ class CategoryNews(NewsListAjaxMixin, View):
 
         if request.user.is_anonymous:
             self.articles = News.objects.filter(category__slug=slug).values(*self.required_fields)
+            logger.debug(f'Anonymous user in category {slug}')
         else:
             self.articles = News.objects.filter(category__slug=slug).values(*self.required_fields).difference(
                 request.user.checked_news.filter(category__slug=slug).values(*self.required_fields)).order_by(
                 '-published_at')
+            logger.debug(f'User: {request.user.id} if category {slug}')
 
         self.categories = Category.objects.filter(is_main=True).only('name', 'slug')
         self.addition_context_data = {'selected_category_slug': slug,
@@ -61,6 +68,8 @@ class NewsDetail(DetailView):
         response = super().get(request, *args, **kwargs)
         if not request.user.is_anonymous:
             History.objects.create(user=request.user, news=self.object)
+            logger.debug(f'User: {request.user.id} see news {self.object.id}')
+        logger.debug(f'Anonymous user see news {self.object.id}')
         return response
 
 
@@ -68,6 +77,7 @@ class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
 
     def get(self, request):
         user = request.user
+        logger.debug(f'User {user.id} in personal account GET')
         form = PersonalPreferencesForm()
         for category in user.categories.filter(is_main=True).only('slug'):
             form.initial[category.slug] = True
@@ -77,12 +87,14 @@ class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
 
     def post(self, request):
         user = request.user
+        logger.debug(f'User {user.id} in personal account POST')
         form = PersonalPreferencesForm(request.POST)
         if form.is_valid():
             categories = Category.objects.filter(slug__in=form.changed_data)
             user.categories.set(categories, clear=True)
-            user.send_news_to_email = form.cleaned_data['send_news_to_email']
             user.countdown_to_email = datetime.timedelta(minutes=int(form.cleaned_data['countdown_to_email']))
+            user.send_news_to_email = form.cleaned_data['send_news_to_email']
+
             user.save()
             messages.success(request, 'Дані успішно збережені!')
         return redirect('news:start')

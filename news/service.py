@@ -1,11 +1,17 @@
-from news.models import News, Category
 from newsapi import NewsApiClient
 from newsapi.const import categories
 from django.conf import settings
+from django.core.mail import send_mail
 from django.utils.timezone import make_aware
+
 import datetime
+import logging
 
 from auth_system.models import User
+from news.models import History
+from news.models import News, Category
+
+logger = logging.getLogger('news.tasks')
 
 
 def pick_top_headlines():
@@ -13,6 +19,7 @@ def pick_top_headlines():
     for category in categories:
         top = newsapi.get_top_headlines(country='ua',
                                         category=category)
+        logger.info(f'receive top headlines in {category}')
         category_obj = Category.objects.get(slug=category)
         if top['status'] == 'ok':
             articles = top['articles']
@@ -29,36 +36,22 @@ def pick_top_headlines():
                                 content=article['content'] or '', )
                 news.append(one_news)
             News.objects.bulk_create(news, ignore_conflicts=True)
+            logger.info(f'save received news in {category} to db')
 
 
 def delete_old_news_from_db():
     News.objects.filter(
         id__in=list(News.objects.values_list('pk', flat=True)[settings.NEWS_TO_SAVE_AFTER_CLEAN:])).delete()
+    logger.info('Successful delete')
 
 
-def get_users_needed_news_contained_into_signatures(celery_task):
-    """
-    :arg celery_task - Task instance object
-    :return: dictionary where key - user id, values - list of ready celery signatures from task 'send_one_news_to_user'.
-    """
-    tasks = {}
-    for news in News.objects.all().order_by('published_at'):
-        title = news.title
-        des = news.description
-        users_ids_emails = User.objects.exclude(checked_news=news).filter(send_news_to_email=True,
-                                                                          categories=news.category).values_list('id',
-                                                                                                                'email',
-                                                                                                                'countdown_to_email')
-        if users_ids_emails:
-            for user_id, user_email, countdown in users_ids_emails:
-                if not user_id in tasks:
-                    tasks[user_id] = [
-                        celery_task.signature((title, des, news.id, user_id, user_email),
-                                              countdown=countdown.seconds,
-                                              immutable=True), ]
-                else:
-                    tasks[user_id].append(
-                        celery_task.signature((title, des, news.id, user_id, user_email),
-                                              countdown=countdown.seconds,
-                                              immutable=True))
-    return tasks
+def send_one_news_to_one_user(user_id):
+    user = User.objects.get(id=user_id)
+    news = News.objects.exclude(users_saw=user).filter(category__in=user.categories.all()).last()
+    if send_mail(news.title, news.description, from_email=settings.DEFAULT_FROM_EMAIL,
+                 recipient_list=[user.email, ]) == 1:
+        logger.info(f'User {user.email} receive news {news.id} on email')
+        History.objects.create(user_id=user_id, news_id=news.id, is_checked_on_site=False, is_checked_on_email=True)
+        logger.info(f'Create relationship with user {user.email} and news {news.id}')
+    else:
+        logging.warning(f'{user.email} did not receive {news.id}')

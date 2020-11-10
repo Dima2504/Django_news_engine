@@ -2,32 +2,25 @@ from news_engine import celery_app
 
 from .service import pick_top_headlines
 from .service import delete_old_news_from_db
-from .service import get_users_needed_news_contained_into_signatures
+from .service import send_one_news_to_one_user
 
+from celery.utils.log import get_task_logger
 
-from news.models import History
-from celery import chain
-from celery import group
-from django.core.mail import send_mail
-from django.conf import settings
+logger = get_task_logger(__name__)
+
 
 @celery_app.task
 def pick_beat_news():
     pick_top_headlines()
+    logger.info('Got news from newsapi.org')
 
 
 @celery_app.task
 def clear_db():
+    logger.info('Before deleting')
     delete_old_news_from_db()
 
 
 @celery_app.task
-def send_one_news_to_user(subject, message, news_id, user_id, user_email):
-    send_mail(subject, message, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[user_email,])
-    History.objects.create(user_id=user_id, news_id=news_id, is_checked_on_site=False, is_checked_on_email=True)
-
-
-@celery_app.task
-def send():
-    tasks = get_users_needed_news_contained_into_signatures(send_one_news_to_user)
-    group([chain(*t) for t in tasks.values()]).apply_async()
+def send_one_news_to_one_user_task(user_id):
+    send_one_news_to_one_user(user_id)
