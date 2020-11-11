@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.telegram',
+    'auth_system.providers.custom_telegram',
 
     'auth_system.apps.AuthSystemConfig',
     'news.apps.NewsConfig',
@@ -208,7 +208,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
         'METHOD': 'oauth2',
     },
-    'telegram': {
+    'custom_telegram': {
         'TOKEN': os.getenv('TELEGRAM_AUTH_BOT_TOKEN'),
     }
 }
