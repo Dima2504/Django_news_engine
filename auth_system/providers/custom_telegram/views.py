@@ -7,8 +7,11 @@ from allauth.socialaccount.helpers import (
     complete_social_login,
     render_authentication_error,
 )
+from django.shortcuts import reverse
 
 from .provider import CustomTelegramProvider
+
+from allauth.socialaccount.providers.base import AuthProcess
 
 
 def telegram_login(request):
@@ -24,6 +27,16 @@ def telegram_login(request):
         return render_authentication_error(
             request, provider_id=provider.id, extra_context={"response": data}
         )
-
     login = provider.sociallogin_from_response(request, data)
+
+    if request.COOKIES.get("process") == 'connect':
+        login.state['process'] = AuthProcess.CONNECT
+    login.state['next'] = request.COOKIES.get('next')
+
     return complete_social_login(request, login)
+
+
+def telegram_connect(request):
+    request.COOKIES['process'] = 'connect'
+    request.COOKIES['next'] = reverse('news:start')
+    return telegram_login(request)

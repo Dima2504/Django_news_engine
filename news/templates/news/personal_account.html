@@ -24,11 +24,12 @@
                         про користувача
                     </div>
                     <ul>
-                        <li class="single-block"><p class="additional-info">Ім'я: {{ user.first_name }}</p></li>
+                        <li class="single-block"><p class="additional-info">Ім'я: {{ user.first_name }}</p><button>Змінити</button></li>
+                        <li class="single-block"><p class="additional-info">Фамілія: {{ user.last_name }}</p><button>Змінити</button></li>
                         <li class="single-block"><p class="additional-info">Ел.пошта: {{ user.email }}</p>
                             <button>Змінити</button>
                         </li>
-                        <li class="single-block"><p class="additional-info">Ваше місто: {user_city}</p>
+                        {% comment %}<li class="single-block"><p class="additional-info">Ваше місто: {user_city}</p>
                             <button>Змінити</button>
                         </li>
                         <li class="single-block"><p class="additional-info">Номер мобільного: {phone_number}</p>
@@ -37,7 +38,7 @@
                         <li class="single-block"><p class="additional-info">Наявність преміум-підписки
                             {premium.isPresent()}</p>
                             <button>Підписатися</button>
-                        </li>
+                        </li>{% endcomment %}
                     </ul>
                 </div>
                 <div class="section-block shadow-default">
@@ -47,6 +48,17 @@
                         <li class="single-block"><p class="additional-info">Останній раз було
                             змінено {{ user.last_password_change|localtime|date:'d.m.Y, H:i' }}</p>
                             <button><a href="{% url 'account_change_password' %}">Змінити пароль</a></button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="section-block shadow-default">
+                    <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/info.png">Прив'язка до соц-мереж
+                    </div>
+                    <ul>
+                        <li class="single-block"><p class="additional-info"><img src="{{ MEDIA_URL }}icons/google.png" class="icon">Google</p><button>Змінити</button></li>
+                        <li class="single-block"><p class="additional-info"><img src="{{ MEDIA_URL }}icons/facebook.png" class="icon">Facebook:</p><button>Змінити</button></li>
+                        <li class="single-block"><p class="additional-info"><img src="{{ MEDIA_URL }}icons/telegram.png" class="icon">Telegram:</p>
+                            {% if not telegram_account %}<button>{% include 'account/snippets/telegram_widget.html' with process="connect" %}</button>{% else %}<button>Прив'язаний</button>{% endif %}
                         </li>
                     </ul>
                 </div>
