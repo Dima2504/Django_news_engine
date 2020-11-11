@@ -213,6 +213,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 SOCIALACCOUNT_QUERY_EMAIL = True
+TELEGRAM_BOT_USERNAME = os.getenv('TELEGRAM_BOT_USERNAME')
 
 ACCOUNT_FORMS = {
     'login': 'auth_system.forms.MyLoginForm',
@@ -220,6 +221,9 @@ ACCOUNT_FORMS = {
     'reset_password': 'auth_system.forms.MyResetPasswordForm',
     'reset_password_from_key': 'auth_system.forms.MyResetPasswordKeyForm',
     'change_password': 'auth_system.forms.MyChangePasswordForm'
+}
+SOCIALACCOUNT_FORMS = {
+    'signup': 'auth_system.forms.MySocialSignupForm'
 }
 
 NEWS_PER_PAGE = 10

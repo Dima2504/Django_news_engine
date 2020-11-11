@@ -3,7 +3,7 @@ from allauth.socialaccount.providers.telegram.provider import TelegramProvider
 
 class CustomTelegramProvider(TelegramProvider):
     id = 'custom_telegram'
-    name = 'Custom Telegram'
+    name = 'Telegram'
 
     def extract_common_fields(self, data):
         return {

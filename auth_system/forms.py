@@ -1,5 +1,6 @@
 from allauth.account.forms import LoginForm
 from allauth.account.forms import SignupForm
+from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from allauth.account.forms import ResetPasswordForm
 from allauth.account.forms import ResetPasswordKeyForm
 from allauth.account.forms import ChangePasswordForm
@@ -71,3 +72,10 @@ class MyChangePasswordForm(ChangePasswordForm):
             'placeholder': 'Повтор паролю',
             'class': 'shadow-default'
         })
+
+
+class MySocialSignupForm(SocialSignupForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].widget = forms.TextInput(
+            attrs={'type': 'email', 'class': 'shadow-default', 'placeholder': 'Ел. Пошта'})

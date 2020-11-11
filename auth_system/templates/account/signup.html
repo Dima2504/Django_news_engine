@@ -22,6 +22,7 @@
                     <a href="{% provider_login_url 'facebook' %}">Зайти з Facebook</a>
                 </div>
             </div>
+            <div id="telegram-widget"><div class="single-content right-button">{% include 'account/snippets/telegram_widget.html' %}</div></div>
             <div class="section-header">Інший варіант</div>
             <form action="{% url 'account_signup' %}" method="POST">
                 {% csrf_token %}
