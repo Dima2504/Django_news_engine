@@ -86,13 +86,10 @@ class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
         form.initial['send_news_to_email'] = user.send_news_to_email
         form.initial['countdown_to_email'] = user.countdown_to_email.seconds / 60
 
-        try:
-            telegram_account = SocialAccount.objects.get(user=user, provider='custom_telegram')
-        except SocialAccount.DoesNotExist:
-            telegram_account = None
+        social_accounts = SocialAccount.objects.filter(user=user).only('provider')
 
         return render(request, template_name='news/personal_account.html',
-                      context={'form': form, 'telegram_account': telegram_account})
+                      context={'form': form, **{social_account.provider + "_account_id": social_account.id for social_account in social_accounts}})
 
     def post(self, request):
         user = request.user
