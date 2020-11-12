@@ -4,6 +4,7 @@ from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from allauth.account.forms import ResetPasswordForm
 from allauth.account.forms import ResetPasswordKeyForm
 from allauth.account.forms import ChangePasswordForm
+from allauth.account.forms import SetPasswordForm
 
 from django import forms
 
@@ -72,6 +73,14 @@ class MyChangePasswordForm(ChangePasswordForm):
             'placeholder': 'Повтор паролю',
             'class': 'shadow-default'
         })
+
+
+class MySetPasswordForm(SetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].widget.attrs['class'] = 'shadow-default'
+        self.fields['password2'].widget.attrs['class'] = 'shadow-default'
+
 
 
 class MySocialSignupForm(SocialSignupForm):

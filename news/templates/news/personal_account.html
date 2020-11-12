@@ -51,9 +51,9 @@
                     <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/password.png">Пароль
                     </div>
                     <ul>
-                        <li class="single-block"><p class="additional-info">Останній раз було
-                            змінено {{ user.last_password_change|localtime|date:'d.m.Y, H:i' }}</p>
-                            <button onclick="document.location=`{% url 'account_change_password' %}`">Змінити пароль</button>
+                        <li class="single-block"><p class="additional-info">{% if user.has_usable_password %}Останній раз було
+                            змінено {{ user.last_password_change|localtime|date:'d.m.Y, H:i' }}{% else %}Пароль не встановлено{% endif %}</p>
+                            <button onclick="document.location=`{% url 'account_change_password' %}`">{% if user.has_usable_password %}Змінити пароль{% else %}Встановити пароль{% endif %}</button>
                         </li>
                     </ul>
                 </div>

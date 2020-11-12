@@ -220,7 +220,8 @@ ACCOUNT_FORMS = {
     'signup': 'auth_system.forms.MySignupForm',
     'reset_password': 'auth_system.forms.MyResetPasswordForm',
     'reset_password_from_key': 'auth_system.forms.MyResetPasswordKeyForm',
-    'change_password': 'auth_system.forms.MyChangePasswordForm'
+    'change_password': 'auth_system.forms.MyChangePasswordForm',
+    'set_password': 'auth_system.forms.MySetPasswordForm',
 }
 SOCIALACCOUNT_FORMS = {
     'signup': 'auth_system.forms.MySocialSignupForm'
