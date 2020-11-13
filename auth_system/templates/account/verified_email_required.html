@@ -5,19 +5,29 @@
 {% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
 
 {% block content %}
-<h1>{% trans "Verify Your E-mail Address" %}</h1>
-
-{% url 'account_email' as email_url %}
-
-<p>{% blocktrans %}This part of the site requires us to verify that
+    {% url 'account_email' as email_url %}
+    {% if user.is_authenticated %}
+        {% include "account/snippets/already_logged_in.html" %}
+    {% endif %}
+    <div class="top-space section-block col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
+        <div class="section-body">
+            <div class="big-text">{% trans "Verify Your E-mail Address" %}</div>
+            <div class="single-content">
+                <p class="additional-info">{% blocktrans %}This part of the site requires us to verify that
 you are who you claim to be. For this purpose, we require that you
 verify ownership of your e-mail address. {% endblocktrans %}</p>
-
-<p>{% blocktrans %}We have sent an e-mail to you for
+            </div>
+        <div class="single-content">
+                <p class="additional-info">{% blocktrans %}We have sent an e-mail to you for
 verification. Please click on the link inside this e-mail. Please
 contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
-
-<p>{% blocktrans %}<strong>Note:</strong> you can still <a href="{{ email_url }}">change your e-mail address</a>.{% endblocktrans %}</p>
-
-
+            </div>
+        <div class="single-content">
+                <p class="additional-info">{% blocktrans %}<strong>Note:</strong> you can still <a href="{{ email_url }}">change your e-mail address</a>.{% endblocktrans %}</p>
+            </div>
+            <div class="section-float-button">
+                <a href="{% url 'account_login' %}"><button class="shadow-default">Повернутися до входу</button></a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
