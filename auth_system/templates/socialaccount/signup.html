@@ -5,18 +5,29 @@
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Sign Up" %}</h1>
-
-<p>{% blocktrans with provider_name=account.get_provider.name site_name=site.name %}You are about to use your {{provider_name}} account to login to
-{{site_name}}. As a final step, please complete the following form:{% endblocktrans %}</p>
-
-<form class="signup" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <button type="submit">{% trans "Sign Up" %} &raquo;</button>
-</form>
-
+    <div class="top-space section-block col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
+        <div class="section-body">
+            <div class="big-text">{% trans "Sign Up" %}</div>
+            <div class="section-header">E-mail:</div>
+            <form class="signup" id="signup_form" action="{% url 'socialaccount_signup' %}" method="post">
+                {% csrf_token %}
+                {% include 'account/snippets/form_errors.html' %}
+                <div class="single-content">
+                    {{ form.email }}
+                </div>
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                {% endif %}
+                <div class="single-content" style="margin-bottom: 40px">
+                    <p class="additional-info">Ви використали свій Телеграм акаунт для реєстрації. Тепер потрбіно ввести Вашу електронну пошту</p>
+                </div>
+                <div class="section-float-button">
+                    <button type="submit" class="shadow-default right-button">{% trans "Sign Up" %} &raquo;</button>
+                </div>
+            </form>
+            <a href="{% url 'account_login' %}">
+                <button class="shadow-default">Повернутися до входу</button>
+            </a>
+        </div>
+    </div>
 {% endblock %}

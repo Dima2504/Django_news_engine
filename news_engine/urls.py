@@ -18,12 +18,14 @@ from django.urls import path
 from django.urls import include
 
 from .views import news_redirect
+from .views import bot
 
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
+    path('accounts/', include('auth_system.urls')),
     path('accounts/', include('allauth.urls')),
     path('admin/', admin.site.urls),
     path('', news_redirect),
