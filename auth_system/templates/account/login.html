@@ -7,23 +7,29 @@
 
 
 {% block content %}
-    <div class="top-space section-block col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
-        <div class="section-body">
+    <div class="top-space section-block shadow-default col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
+        <div class="section-body-misc">
             <div class="big-text">Вхід</div>
             <div class="section-header">Через соц. мережі</div>
-            <div class="single-block chooseable">
-                <div class="single-content">
-                    <img src="{{ MEDIA_URL }}icons/google.png" class="icon">
-                    <a href="{% provider_login_url 'google' %}">Зайти з Google</a>
+            <a href="{% provider_login_url 'google' %}">
+                <div class="single-block shadow-default chooseable">
+                    <div class="single-content">
+                        <img src="{{ MEDIA_URL }}icons/google.png" class="icon">
+                        Зайти з Google
+                    </div>
                 </div>
-            </div>
-            <div class="single-block chooseable">
-                <div class="single-content">
-                    <img src="{{ MEDIA_URL }}icons/facebook.png" class="icon">
-                    <a href="{% provider_login_url 'facebook' %}">Зайти з Facebook</a>
+            </a>
+            <a href="{% provider_login_url 'facebook' %}">
+                <div class="single-block shadow-default chooseable">
+                    <div class="single-content">
+                        <img src="{{ MEDIA_URL }}icons/facebook.png" class="icon">
+                        Зайти з Facebook
+                    </div>
                 </div>
+            </a>
+            <div id="telegram-widget">
+                <div class="single-content">{% include 'account/snippets/telegram_widget.html' %}</div>
             </div>
-            <div id="telegram-widget"><div class="single-content right-button">{% include 'account/snippets/telegram_widget.html' %}</div></div>
             <div class="section-header">Інший варіант</div>
             <form action="{% url 'account_login' %}" method="POST">
                 {% csrf_token %}
@@ -34,16 +40,17 @@
                 <div class="single-content">
                     {{ form.password }}
                 </div>
-                <div class="section-float-button">
-                    <button class="shadow-default right-button" type="submit">Увійти</button>
+                <div class="flex top-space button-row">
+                    <a href="{% url 'account_signup' %}">
+                        <button type="button" class="shadow-default">Реєстрація</button>
+                    </a>
+                    <a href="{% url 'account_reset_password' %}">
+                        <button type="button" class="shadow-default">Відновлення паролю</button>
+                    </a>
+                    <a href=""><button type="submit" class="shadow-default"><img class="icon" src="{{ MEDIA_URL }}icons/login.png">Увійти
+                    </button></a>
                 </div>
             </form>
-            <a href="{% url 'account_signup' %}">
-                <button class="shadow-default">Реєстрація</button>
-            </a>
-            <a style="margin-left: 10px" href="{% url 'account_reset_password' %}">
-                <button class="shadow-default">Забули пароль?</button>
-            </a>
         </div>
     </div>
 {% endblock %}

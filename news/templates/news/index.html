@@ -4,15 +4,10 @@
 {% block head_title %}
     Picle
 {% endblock %}
-{% block extra_head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}">
-{% endblock %}
-
 
 
 {% block content %}
-    <div class="section-block">
+    <div class="section-block shadow-default">
         <div class="section-header">Найактуальніша новина</div>
         <div id="last-news-section" class="section-body col-lg-12 shadow--default">
             <img src="{{ MEDIA_URL }}images/rain.jpg">
@@ -22,7 +17,7 @@
             </div>
         </div>
     </div>
-    <div class="section-block">
+    <div class="section-block shadow-default">
         <div class="section-header">
             {% if selected_category_slug %}
                 Останні новини в категорії "{{ selected_category_name }}"
@@ -30,7 +25,7 @@
                 Список усіх останніх новин
             {% endif %}
         </div>
-        <div class="section-body" id="news-container">
+        <div class="section-body news-block" id="news-container">
             {% for article in articles %}
                 <a href="{% url 'news:news_detail' article.slug %}">{% include 'news/snippets/news_block.html' %}</a>
             {% endfor %}

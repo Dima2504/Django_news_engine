@@ -1,134 +1,168 @@
 {% extends 'base.html' %}
-{% load static tz socialaccount%}
+{% load static tz socialaccount %}
 {% block head_title %}
     Персональний кабінет
 {% endblock %}
-{% block extra_head %}
-    {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/checkbox.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/mics.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@500&display=swap" rel="stylesheet">
-{% endblock %}
 
-{% block body %}
-    {% block modal_window %}
-        {{ block.super }}
+{% block permanent_body %}
+    <body class="font-commissioner">
+    {% block body %}
+        {% block modal_window %}
+            {{ block.super }}
         {% endblock %}
-    {% block info_messages %}
-        {{ block.super }}
+        {% block info_messages %}
+            {{ block.super }}
         {% endblock %}
-    {% block sidebar_menu %}
-    {% endblock %}
-    {% block main %}
-        {% block navbar %}
+        {% block sidebar_menu %}
         {% endblock %}
-        {% block content %}
-            <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
+        {% block main %}
+            {% block navbar %}
+            {% endblock %}
+            {% block content %}
                 <div class="big-text">Персональний кабінет</div>
-                <div class="section-block shadow-default">
-                    <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/info.png">Інформація
-                        про користувача
-                    </div>
-                    <ul>
-                        <li class="single-block"><p class="additional-info">Ім'я: {{ user.first_name }}</p><button>Змінити</button></li>
-                        <li class="single-block"><p class="additional-info">Фамілія: {{ user.last_name }}</p><button>Змінити</button></li>
-                        <li class="single-block"><p class="additional-info">Ел.пошта: {{ user.email }}</p>
-                            <button>Змінити</button>
-                        </li>
-                        {% comment %}<li class="single-block"><p class="additional-info">Ваше місто: {user_city}</p>
-                            <button>Змінити</button>
-                        </li>
-                        <li class="single-block"><p class="additional-info">Номер мобільного: {phone_number}</p>
-                            <button>Прив'язати</button>
-                        </li>
-                        <li class="single-block"><p class="additional-info">Наявність преміум-підписки
-                            {premium.isPresent()}</p>
-                            <button>Підписатися</button>
-                        </li>{% endcomment %}
-                    </ul>
-                </div>
-                <div class="section-block shadow-default">
-                    <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/password.png">Пароль
-                    </div>
-                    <ul>
-                        <li class="single-block"><p class="additional-info">{% if user.has_usable_password %}Останній раз було
-                            змінено {{ user.last_password_change|localtime|date:'d.m.Y, H:i' }}{% else %}Пароль не встановлено{% endif %}</p>
-                            <button onclick="document.location=`{% url 'account_change_password' %}`">{% if user.has_usable_password %}Змінити пароль{% else %}Встановити пароль{% endif %}</button>
-                        </li>
-                    </ul>
-                </div>
-                <div class="section-block shadow-default">
-                    <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/info.png">Прив'язка до соц-мереж
-                    </div>
-                    <ul>
-                        <li class="single-block google-account"><p class="additional-info"><img src="{{ MEDIA_URL }}icons/google.png" class="icon">Google</p>
-                            {% if not google_account_id %}<button onclick="document.location=`{% provider_login_url 'google' process="connect" next="/" %}`">Приєднати</button>{% else %}<button onclick="sendPostForDelete({{ google_account_id }})" style="background-color: red">Відв'язати</button>{% endif %}</li>
-                        <li class="single-block facebook-account"><p class="additional-info"><img src="{{ MEDIA_URL }}icons/facebook.png" class="icon">Facebook:</p>
-                            {% if not facebook_account_id %}<button onclick="document.location=`{% provider_login_url 'facebook' process="connect" next="/" %}`">Приєднати</button>{% else %}<button onclick="sendPostForDelete({{ facebook_account_id }})" style="background-color: red">Відв'язати</button>{% endif %}
-                        </li>
-                        <li class="single-block telegram-account"><p class="additional-info"><img src="{{ MEDIA_URL }}icons/telegram.png" class="icon">Telegram:</p>
-                            {% if not custom_telegram_account_id %}<button>{% include 'account/snippets/telegram_widget.html' with process="connect" %}</button>{% else %}<button onclick="sendPostForDelete({{ custom_telegram_account_id }})" style="background-color: red">Відв'язати</button>{% endif %}
-                        </li>
-                    </ul>
-                </div>
+                <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
 
-                <script type="text/javascript">
-                    function sendPostForDelete(id){
-                        let request = new XMLHttpRequest();
-                        request.open('POST', `{% url 'disconnect_social_account' %}`);
-                        request.responseType = 'json';
-                        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                        request.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
-                        request.addEventListener('readystatechange', function () {
-                            if (request.readyState === 4 && request.status === 200) {
-                                //TODO make it not with reload, but with js
-                                document.location.reload()
-                            }
-                        });
-                        request.send(`social_account_id=${id}`);
-                    }
-                </script>
-                <form action="" method="post">
-                    {% csrf_token %}
-
+                    <div class="section-block shadow-default">
+                        <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/info.png">Інформація
+                            про користувача
+                        </div>
+                        <ul>
+                            <li class="single-block shadow-default flex"><p class="additional-info">
+                                Ім'я: {{ user.first_name }}</p>
+                                <button class="right">Змінити</button>
+                            </li>
+                            <li class="single-block shadow-default flex"><p class="additional-info">
+                                Фамілія: {{ user.last_name }}</p>
+                                <button class="right">Змінити</button>
+                            </li>
+                            <li class="single-block shadow-default flex"><p class="additional-info">
+                                Ел.пошта: {{ user.email }}</p>
+                                <button class="right">Змінити</button>
+                            </li>
+                            {% comment %}<li class="single-block shadow-default flex">
+				<p class="additional-info">Ваше місто: {user_city}</p>
+				<button class="right">Змінити</button></li>
+			<li class="single-block shadow-default flex">
+				<p class="additional-info">Номер мобільного: {phone_number}</p>
+				<button class="right">Прив'язати</button>
+			</li>
+			<li class="single-block shadow-default flex">
+				<p class="additional-info">Наявність преміум-підписки {premium.isPresent()}</p>
+				<button class="right">Підписатися</button>
+			</li>{% endcomment %}
+                        </ul>
+                    </div>
                     <div class="section-block shadow-default">
                         <div class="section-header"><img class="icon-personal-info"
-                                                         src="{{ MEDIA_URL }}icons/preferences.png">Уподобання
+                                                         src="{{ MEDIA_URL }}icons/password.png">Пароль
                         </div>
                         <ul>
-                            {% for field in form %}
-                                {% if field.label != 'send_news_to_email' and field.label != 'countdown_to_email' %}
-                                    <li class="single-block"><p
-                                            class="additional-info">{{ field.label|capfirst }}</p>{{ field }}</li>
-                                {% endif %}
-                            {% endfor %}
+                            <li class="single-block shadow-default flex"><p class="additional-info">
+                                {% if user.has_usable_password %}
+                                    Останній раз було
+                                    змінено {{ user.last_password_change|localtime|date:'d.m.Y, H:i' }}{% else %}Пароль
+                                    не
+                                    встановлено{% endif %}</p>
+                                <button class="right" onclick="document.location=`{% url 'account_change_password' %}`">
+                                    {% if user.has_usable_password %}Змінити пароль{% else %}Встановити
+                                        пароль{% endif %}</button>
+                            </li>
                         </ul>
                     </div>
                     <div class="section-block shadow-default">
-                        <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/mail.png">Розсилка
+                        <div class="section-header"><img class="icon-personal-info" src="{{ MEDIA_URL }}icons/info.png">Прив'язка
+                            до соц-мереж
                         </div>
                         <ul>
-                            <li class="single-block">
-                                <p class="additional-info">Період між відправкою новин на пошту, у хвилинах!</p>
-                                <div class="single-content">
-                                    {{ form.countdown_to_email }}
-                                </div>
+                            <li class="single-block shadow-default google-account flex"><p class="additional-info"><img
+                                    src="{{ MEDIA_URL }}icons/google.png" class="icon-personal-info">Google</p>
+                                {% if not google_account_id %}
+                                    <button class="right" onclick="document.location=`{% provider_login_url 'google' process="connect" next="/" %}`">
+                                        Приєднати
+                                    </button>{% else %}
+                                    <button class="right" onclick="sendPostForDelete({{ google_account_id }})"
+                                            style="background-color: red">Відв'язати
+                                    </button>{% endif %}</li>
+                            <li class="single-block shadow-default facebook-account flex"><p class="additional-info"><img
+                                    src="{{ MEDIA_URL }}icons/facebook.png" class="icon-personal-info">Facebook:</p>
+                                {% if not facebook_account_id %}
+                                    <button class="right" onclick="document.location=`{% provider_login_url 'facebook' process="connect" next="/" %}`">
+                                        Приєднати
+                                    </button>{% else %}
+                                    <button class="right" onclick="sendPostForDelete({{ facebook_account_id }})"
+                                            style="background-color: red">Відв'язати
+                                    </button>{% endif %}
                             </li>
-                            <li class="single-block"><p
-                                    class="additional-info">Отримувати вподобання на
-                                пошту</p>{{ form.send_news_to_email }}
+                            <li class="single-block shadow-default telegram-account flex button-row"><p class="additional-info"><img
+                                    src="{{ MEDIA_URL }}icons/telegram.png" class="icon-personal-info">Telegram:</p>
+                                {% if not custom_telegram_account_id %}
+                                    <div class="additional-info">{% include 'account/snippets/telegram_widget.html' with process="connect" %}</div>{% else %}
+                                    <button onclick="sendPostForDelete({{ custom_telegram_account_id }})"
+                                            style="background-color: red">Відв'язати
+                                    </button>{% endif %}
                             </li>
-                            <li class="single-block"><p class="additional-info">Відправка новин у Telegram (потрібен
-                                преміум)</p>
-                                <input id="finances" type="checkbox" class="shadow-default switch" disabled></li>
                         </ul>
-                        <div class="section-float-button">
-                            <button type="submit">Зберегти все</button>
-                        </div>
                     </div>
-                </form>
-            </div>
+                    <script type="text/javascript">
+                        function sendPostForDelete(id) {
+                            let request = new XMLHttpRequest();
+                            request.open('POST', `{% url 'disconnect_social_account' %}`);
+                            request.responseType = 'json';
+                            request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                            request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                            request.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                            request.addEventListener('readystatechange', function () {
+                                if (request.readyState === 4 && request.status === 200) {
+                                    //TODO make it not with reload, but with js
+                                    document.location.reload()
+                                }
+                            });
+                            request.send(`social_account_id=${id}`);
+                        }
+                    </script>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="section-block shadow-default">
+                            <div class="section-header"><img class="icon-personal-info"
+                                                             src="{{ MEDIA_URL }}icons/preferences.png">Уподобання
+                            </div>
+                            <ul>
+                                {% for field in form %}
+                                    {% if field.label != 'send_news_to_email' and field.label != 'countdown_to_email' %}
+                                        <li class="single-block shadow-default flex"><p
+                                                class="additional-info">{{ field.label|capfirst }}</p>{{ field }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="section-block shadow-default">
+                            <div class="section-header"><img class="icon-personal-info"
+                                                             src="{{ MEDIA_URL }}icons/mail.png">Розсилка
+                            </div>
+                            <ul>
+                                <li class="single-block shadow-default flex">
+                                    <p class="additional-info">Період між відправкою новин на пошту, у хвилинах!</p>
+                                    <div class="single-content">
+                                        {{ form.countdown_to_email }}
+                                    </div>
+                                </li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">Отримувати вподобання на
+                                    пошту</p>{{ form.send_news_to_email }}
+                                </li>
+                                <li class="single-block shadow-default flex"><p class="additional-info">Відправка новин
+                                    у Telegram (потрібен
+                                    преміум)</p>
+                                    <input id="finances" type="checkbox" class="shadow-default switch" disabled></li>
+                            </ul>
+                            <div class="flex top-space button-row">
+                                <button type="submit" class="shadow-default">Зберегти все
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            {% endblock %}
         {% endblock %}
     {% endblock %}
+    </body>
 {% endblock %}

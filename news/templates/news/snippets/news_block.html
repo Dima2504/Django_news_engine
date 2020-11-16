@@ -1,8 +1,8 @@
-<div class="single-block chooseable">
-    <div class="flex">
-        <div class="single-content">{{ article.title }}</div>
+<div class="single-block chooseable shadow-default shadow-hard-on-hover">
+    <div class="flex flex-column-low-res">
+        <div class="single-content single-content-news">{{ article.title }}</div>
         {% if article.url_to_image %}
-            <img class="single-news-img d-none d-xl-block" src="{{ article.url_to_image }}" alt="Помилка завантаження картинки">
+            <img class="single-news-img" src="{{ article.url_to_image }}" alt="Помилка завантаження картинки">
         {% endif %}
     </div>
     <div class="single-time">{{ article.published_at }}

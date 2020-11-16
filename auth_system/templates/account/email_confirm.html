@@ -7,8 +7,8 @@
 {% block head_title %}Підтвердження електронної пошти{% endblock %}
 
 {% block content %}
-    <div class="top-space section-block col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
-        <div class="section-body">
+    <div class="top-space section-block shadow-default col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
+        <div class="section-body-misc">
             <div class="big-text">Підтвердження ел. пошти</div>
             {% if confirmation %}
                 <div class="single-content">
@@ -19,8 +19,10 @@
                 <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
                     {% csrf_token %}
                     {% include 'account/snippets/form_errors.html' %}
-                    <div class="section-float-button">
-                        <button class="shadow-default">Підтвердити</button>
+                    <div class="flex button-row top-space">
+                        <button type="submit" class="shadow-default"><img class="icon"
+                                                                          src="{{ MEDIA_URL }}icons/checkmark.png">Підтвердити
+                        </button>
                     </div>
                 </form>
             {% else %}

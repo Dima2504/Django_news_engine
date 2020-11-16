@@ -5,8 +5,8 @@
 {% block head_title %}{% trans "Sign Out" %}{% endblock %}
 
 {% block content %}
-    <div class="top-space section-block col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
-        <div class="section-body">
+    <div class="top-space section-block shadow-default col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
+        <div class="section-body-misc">
             <div class="big-text">{% trans "Sign Out" %}</div>
             <div class="single-content">
                 <p class="additional-info">{% trans 'Are you sure you want to sign out?' %}</p>
@@ -17,8 +17,9 @@
                 {% if redirect_field_value %}
                     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
                 {% endif %}
-                <div class="section-float-button">
-                    <button type="submit" class="shadow-default">{% trans 'Sign Out' %}</button>
+                <div class="flex top-space button-row">
+                    <button type="submit" class="shadow-default"><img class="icon" src="{{ MEDIA_URL }}icons/exit.png">Вийти
+                    </button>
                 </div>
             </form>
         </div>

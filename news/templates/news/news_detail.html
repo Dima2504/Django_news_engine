@@ -3,26 +3,23 @@
 {% block head_title %}
     {{ article.title }}
 {% endblock %}
-{% block extra_head %}
-    {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/news_page.css' %}">
-{% endblock %}
+
 {% block content %}
-    <div class="section-block">
-        <div class="section-header">{{ article.title }}</div>
+    <div class="section-block shadow-default">
+			<div class="section-header">{{ article.title }}</div>
         {% if article.url_to_image %}
-            <div class="news-page-img">
-                <img src="{{ article.url_to_image }}">
-            </div>
+			<div class="news-page-img">
+				<img src="{{ article.url_to_image }}">
+			</div>
         {% endif %}
-        <div>
-            <p class="news-page-text">{{ article.description }}</p>
-            <div class="right">
-                <div class="news-page-additional-info">BBC News</div>
-                <div class="news-page-additional-info">{{ article.author }}</div>
-                <div class="news-page-additional-info"><a href="{{ article.url }}" target="_blank">Посилання на оригінал</a></div>
-                <div class="single-time">{{ article.published_at }}</div>
-            </div>
-        </div>
-    </div>
+			<div>
+				<p class="news-page-text">{{ article.description }}</p>
+				<div class="text-right">
+					<div class="news-page-additional-info">BBC News</div>
+					<div class="news-page-additional-info">{{ article.author }}</div>
+					<div class="news-page-additional-info"><a href="{{ article.url }}" target="_blank">Посилання на оригінал</a></div>
+					<div class="single-time">1{{ article.published_at }}</div>
+				</div>
+			</div>
+		</div>
 {% endblock %}
