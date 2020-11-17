@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views.generic.base import View
 from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
@@ -104,3 +105,12 @@ class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
             user.save()
             messages.success(request, 'Дані успішно збережені!')
         return redirect('news:start')
+
+
+class NewsHistory(LoginRequiredMixin, ListView):
+    template_name = 'news/news_history.html'
+    model = News
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['categories'] = Category.objects.filter(is_main=True).only('name', 'slug')
+        return context

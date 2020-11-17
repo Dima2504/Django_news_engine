@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head_title %}
+    Історія новин
+{% endblock %}
+{% block content %}
+    <div class="section-block shadow-default">
+        <div class="section-header"> Параметри пошуку</div>
+        <div class="section-body">
+            <div class="flex">
+                <input type="text" name="" class="shadow-default margin-zero" placeholder="Текст для пошуку"></div>
+            <div class="flex">
+                <input type="text" name="" class="shadow-default margin-zero" placeholder="Текст для пошуку"></div>
+            <div class="flex button-row">
+                <a>
+                    <button class="shadow-default"><img class="icon" src="{{ MEDIA_URL }}icons/search.png">Пошук</button>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="section-block shadow-default">
+        <div class="section-header"> Результати пошуку</div>
+        <div class="section-body news-block" id="news-container">
+            <a href="/news/detail/16049342869204354/">
+                <div class="single-block chooseable shadow-default">
+                    <div class="flex flex-column-low-res">
+                        <div class="single-content single-content-news">Карантин вихідного дня: що це таке і як довго
+                            триватиме - BBC Україна
+                        </div>
+                        <img class="single-news-img"
+                             src="https://ichef.bbci.co.uk/news/1024/branded_ukrainian/1801C/production/_115323389_1021601.jpg"
+                             alt="Помилка завантаження картинки"></div>
+                    <div class="single-time">09 листопада 2020 р. 13:40</div>
+                </div>
+            </a>
+            <a href="/news/detail/16049342869207046/">
+                <div class="single-block chooseable shadow-default">
+                    <div class="flex flex-column-low-res">
+                        <div class="single-content single-content-news">Розчарування: чому Шахтар розгромив Динамо,
+                            статус Сидорчука треба переглянути, а Класичне справило гнітюче враження — Футбол 24 -
+                            Футбол 24 Розчарування: чому Шахтар розгромив Динамо, статус Сидорчука треба переглянути, а
+                            Класичне справило гнітюче враження — Футбол 24 - Футбол 24
+                        </div>
+                        <img class="single-news-img"
+                             src="https://football24.ua/resources/photos/news/600x315_DIR/202011/631590.jpg"
+                             alt="Помилка завантаження картинки"></div>
+                    <div class="single-time">09 листопада 2020 р. 13:30</div>
+                </div>
+            </a>
+            <a href="/news/detail/1604934286920932/">
+                <div class="single-block chooseable shadow-default">
+                    <div class="flex flex-column-low-res">
+                        <div class="single-content single-content-news">Карантин вихідного дня допоможе уникнути
+                            жорсткого локдауну — Зеленський - Укрінформ. Новини України та світу
+                        </div>
+                        <img class="single-news-img"
+                             src="https://static.ukrinform.com/photos/2020_11/thumb_files/630_360_1604927491-399.jpeg"
+                             alt="Помилка завантаження картинки"></div>
+                    <div class="single-time">09 листопада 2020 р. 13:08</div>
+                </div>
+            </a>
+            <a href="/news/detail/1604934286921142/">
+                <div class="single-block chooseable shadow-default">
+                    <div class="flex flex-column-low-res">
+                        <div class="single-content single-content-news">&quot;Мане грав проти ідіота&quot;: Кін розніс
+                            Манчестер Сіті за черговий безглуздий пенальті — Футбол 24 - Футбол 24
+                        </div>
+                        <img class="single-news-img"
+                             src="https://football24.ua/resources/photos/news/600x315_DIR/202011/631599.jpg"
+                             alt="Помилка завантаження картинки"></div>
+                    <div class="single-time">09 листопада 2020 р. 12:50</div>
+                </div>
+            </a>
+            <a href="/news/detail/16049342869213438/">
+                <div class="single-block chooseable shadow-default">
+                    <div class="flex flex-column-low-res">
+                        <div class="single-content single-content-news">У лікарнях заборонено планові операції: Україна
+                            переходить на другий етап реагування на поширення коронавірусу - УНІАН
+                        </div>
+                        <img class="single-news-img"
+                             src="https://images.unian.net/photos/2020_04/thumb_files/1000_545_1586983577-7117.jpg?1"
+                             alt="Помилка завантаження картинки"></div>
+                    <div class="single-time">09 листопада 2020 р. 12:49</div>
+                </div>
+            </a>
+            <a href="/news/detail/16049342869215493/">
+                <div class="single-block chooseable shadow-default">
+                    <div class="flex flex-column-low-res">
+                        <div class="single-content single-content-news">Азербайджан заявив, що &quot;звільнив від
+                            окупації&quot; ще 23 села в Карабасі - Українська правда
+                        </div>
+                        <img class="single-news-img" src="https://img.pravda.com/images/doc/d/5/d553d84-0.jpg"
+                             alt="Помилка завантаження картинки"></div>
+                    <div class="single-time">09 листопада 2020 р. 12:26</div>
+                </div>
+            </a>
+            <a href="/news/detail/16049342869221363/">
+                <div class="single-block chooseable shadow-default">
+                    <div class="flex flex-column-low-res">
+                        <div class="single-content single-content-news">&quot;Ювентус&quot; вирішив позбутись Роналду -
+                            новини Еспресо TV | Україна - espreso.tv
+                        </div>
+                        <img class="single-news-img"
+                             src="https://static.espreso.tv/uploads/article/2806513/images/im610x343-GettyImages-1229539953.jpg"
+                             alt="Помилка завантаження картинки"></div>
+                    <div class="single-time">09 листопада 2020 р. 11:48</div>
+                </div>
+            </a>
+            <a href="/news/detail/16049342869223294/">
+                <div class="single-block chooseable shadow-default">
+                    <div class="flex flex-column-low-res">
+                        <div class="single-content single-content-news">Меркель не згадала про Трампа, коментуючи
+                            результати виборів у США - Українська правда
+                        </div>
+                        <img class="single-news-img"
+                             src="https://img.pravda.com/images/doc/7/2/7272909_fb_image_ukr_2020_11_09_13_46_50.png"
+                             alt="Помилка завантаження картинки"></div>
+                    <div class="single-time">09 листопада 2020 р. 11:46</div>
+                </div>
+            </a>
+            <a href="/news/detail/1604921710766507/">
+                <div class="single-block chooseable shadow-default">
+                    <div class="flex flex-column-low-res">
+                        <div class="single-content single-content-news">Невідомий смартфон Xiaomi з чіпом Snapdragon 875
+                            з&#x27;явився на Geekbench - ITsider.
+                        </div>
+                        <img class="single-news-img"
+                             src="https://itsider.com.ua/wp-content/uploads/2020/09/xiaomimi10t.jpg"
+                             alt="Помилка завантаження картинки"></div>
+                    <div class="single-time">09 листопада 2020 р. 10:36</div>
+                </div>
+            </a>
+            <a href="/news/detail/1604934286922704/">
+                <div class="single-block chooseable shadow-default">
+                    <div class="flex flex-column-low-res">
+                        <div class="single-content single-content-news">Вибори в США 2020 - Стівен Кінг звернувся до
+                            Трампа - Кінг розкритикував Трампа - Світ - TCH.ua - TSN UA
+                        </div>
+                        <img class="single-news-img"
+                             src="https://img.tsn.ua/cached/1582192914/tsn-044a03ab1c6615c0753d2de60e24b711/thumbs/1200x630/05/11/366d14b16be7987bebb0a804b9141105.jpeg"
+                             alt="Помилка завантаження картинки"></div>
+                    <div class="single-time">09 листопада 2020 р. 10:18</div>
+                </div>
+            </a>
+        </div>
+    </div>
+{% endblock %}

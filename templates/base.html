@@ -105,15 +105,18 @@
                                 Доброго дня{% if user.is_authenticated %}, {{ user.first_name }}{% endif %}!
                             </li>
                             <li class="nav-item">
-                                {% now "Y:m:d" %}
-                            </li>
-                            <li class="nav-item">
                                 {city} {city_temp}
                             </li>
+                        <a href="{% url 'news:news_history' %}" class="nav-link">
+                            <li class="nav-item">
+                                <img src="{{ MEDIA_URL }}icons/filter.png" class="icon">
+                                Переглянуті
+                            </li>
+                        </a>
                             <a href="{% url 'news:personal_account' %}" class="nav-link">
                                 <li class="nav-item">
                                     <img src="{{ MEDIA_URL }}icons/personal_account.png" class="icon">
-                                    Персольний кабінет
+                                    Кабінет
                                 </li>
                             </a>
                             {% if user.is_authenticated %}
