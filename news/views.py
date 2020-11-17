@@ -70,7 +70,7 @@ class NewsDetail(DetailView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
         if not request.user.is_anonymous:
-            History.objects.create(user=request.user, news=self.object)
+            History.objects.get_or_create(user=request.user, news=self.object)
             logger.debug(f'User: {request.user.id} see news {self.object.id}')
         logger.debug(f'Anonymous user see news {self.object.id}')
         return response
@@ -107,10 +107,15 @@ class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
         return redirect('news:start')
 
 
-class NewsHistory(LoginRequiredMixin, ListView):
-    template_name = 'news/news_history.html'
-    model = News
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['categories'] = Category.objects.filter(is_main=True).only('name', 'slug')
-        return context
+class NewsHistory(LoginRequiredMixin, View):
+    def get(self, request):
+        categories = Category.objects.filter(is_main=True).only('name', 'slug')
+        articles = request.user.checked_news.all().values('title', 'published_at', 'url_to_image', 'slug')
+        return render(request, template_name='news/news_history.html', context={'categories': categories, 'articles': articles})
+
+from django.http import JsonResponse
+from django.db.models import Q
+def ajax_filter(request):
+    if request.is_ajax():
+        articles = request.user.checked_news.filter(Q(title__icontains=request.GET.get('text')) | Q(description__icontains=request.GET.get('text'))).values('title', 'published_at', 'url_to_image', 'slug')
+        return JsonResponse({'data': list(articles)})

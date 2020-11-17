@@ -51,7 +51,7 @@ def send_one_news_to_one_user(user_id):
     if send_mail(news.title, news.description, from_email=settings.DEFAULT_FROM_EMAIL,
                  recipient_list=[user.email, ]) == 1:
         logger.info(f'User {user.email} receive news {news.id} on email')
-        History.objects.create(user_id=user_id, news_id=news.id, is_checked_on_site=False, is_checked_on_email=True)
+        History.objects.update_or_create(user_id=user_id, news_id=news.id, defaults={'is_checked_on_email': True})
         logger.info(f'Create relationship with user {user.email} and news {news.id}')
     else:
         logging.warning(f'{user.email} did not receive {news.id}')
