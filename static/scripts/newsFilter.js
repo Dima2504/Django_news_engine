@@ -1,5 +1,16 @@
+let NEWS_BLOCK =
+    `<a>
+        <div class="single-block chooseable shadow-default shadow-hard-on-hover">
+            <div class="flex flex-column-low-res">
+                <div class="single-content single-content-news"></div>
+                <img class="single-news-img" alt="Помилка завантаження картинки">
+            </div>
+            <div class="single-time"></div>
+        </div>
+    </a>`.trim();
+
 function render(json) {
-    let block = $('#news-container a:last').clone();
+    let block = $(NEWS_BLOCK);
     $('#news-container').empty();
     let articles = json['data'];
     for (let article of articles) {

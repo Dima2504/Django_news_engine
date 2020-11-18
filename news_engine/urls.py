@@ -18,7 +18,6 @@ from django.urls import path
 from django.urls import include
 
 from .views import news_redirect
-from .views import bot
 
 from django.conf.urls.static import static
 from django.conf import settings

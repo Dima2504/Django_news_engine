@@ -12,12 +12,33 @@
                     <input type="text" name="text" class="shadow-default margin-zero" placeholder="Текст для пошуку">
                 </div>
                 <div class="flex">
-                    Переглянута на сайті:
-                    <input type="checkbox" class="shadow-default" name="onSite">
+                    Переглянуті на сайті:
+                    <input type="checkbox" class="shadow-default" name="checked-on" value="site" checked>
                 </div>
                 <div class="flex">
                     Відправлені на пошту:
-                    <input type="checkbox" class="shadow-default" name="onEmail">
+                    <input type="checkbox" class="shadow-default" name="checked-on" value="email" checked>
+                </div>
+                <div class="flex">
+                    Сортуватування
+                    <select name="sort-by">
+                        <option value="published_at">Датою виходу</option>
+                        <option value="checked_at">Датою перегляду</option>
+                        <option value="text">За текстом</option>
+                    </select>
+                </div>
+                <div class="flex">
+                    За спаданням
+                    <input type="checkbox" class="shadow-default" name="order" value="-" checked>
+                </div>
+                <div class="flex">
+                    З категорії:
+                    <select name="category">
+                        <option value="all">Усі категорії</option>
+                        {% for category in categories %}
+                            <option value="{{ category.slug }}">{{ category.name|capfirst }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="flex button-row">
                     <a>
@@ -27,7 +48,9 @@
                     </a>
                 </div>
             </form>
-            <script src="{% static 'scripts/newsFilter.js' %}"></script>
+            <script src="{% static 'scripts/newsFilter.js' %}">
+
+            </script>
         </div>
     </div>
     <div class="section-block shadow-default">

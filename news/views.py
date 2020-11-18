@@ -6,6 +6,9 @@ from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
+from django.http import JsonResponse, HttpResponseNotFound
+from django.db.models import Q
+
 from .forms import PersonalPreferencesForm
 
 from .models import Category
@@ -113,9 +116,24 @@ class NewsHistory(LoginRequiredMixin, View):
         articles = request.user.checked_news.all().values('title', 'published_at', 'url_to_image', 'slug')
         return render(request, template_name='news/news_history.html', context={'categories': categories, 'articles': articles})
 
-from django.http import JsonResponse
-from django.db.models import Q
-def ajax_filter(request):
-    if request.is_ajax():
-        articles = request.user.checked_news.filter(Q(title__icontains=request.GET.get('text')) | Q(description__icontains=request.GET.get('text'))).values('title', 'published_at', 'url_to_image', 'slug')
-        return JsonResponse({'data': list(articles)})
+
+
+class AjaxFilter(View):
+    def get(self, request):
+        if request.is_ajax():
+            articles = request.user.checked_news.filter(Q(title__icontains=request.GET.get('text')) | Q(description__icontains=request.GET.get('text')))
+            articles = articles.filter(history__checked_on__in=request.GET.getlist('checked-on'))
+            if request.GET.get('category') != 'all':
+                articles = articles.filter(category__slug=request.GET.get('category'))
+            sort_by = request.GET.get('sort-by')
+            order = request.GET.get('order', '')
+            if sort_by == 'checked_at':
+                articles = articles.order_by(order+'history__checked_at')
+            elif sort_by == 'published_at':
+                articles = articles.order_by(order+'published_at')
+            elif sort_by == 'text':
+                articles = articles.order_by(order+'title', order+'description')
+            articles = articles.values('title', 'published_at', 'url_to_image', 'slug')
+            return JsonResponse({'data': list(articles)})
+        else:
+            return HttpResponseNotFound()
