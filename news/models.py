@@ -55,11 +55,20 @@ class News(models.Model):
 
 
 class History(models.Model):
+    ON_SITE = 'site'
+    ON_EMAIL = 'email'
+    ON_TELEGRAM = 'telegram'
+    ON_APP = 'app'
+    CHECKED_CHOICES = [
+        (ON_SITE, 'На сайті'),
+        (ON_EMAIL, 'На пошті'),
+        (ON_TELEGRAM, 'В телеграмі'),
+        (ON_APP, 'У мобільній програмі'),
+    ]
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     news = models.ForeignKey(News, on_delete=models.CASCADE)
     checked_at = models.DateTimeField(verbose_name='Дата і час перегляду новини', auto_now_add=True)
-    is_checked_on_site = models.BooleanField(verbose_name='Чи була переглянута на сайті', default=True)
-    is_checked_on_email = models.BooleanField(verbose_name='Чи була переглянута на пошті', default=False)
+    checked_on = models.CharField(max_length=8, choices=CHECKED_CHOICES, default=ON_SITE, verbose_name='Переглянуто на ', help_text='Де користувач переглянув дану новину')
 
     class Meta:
         verbose_name = 'Історія перегляду новин'
