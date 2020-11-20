@@ -77,23 +77,27 @@
                             <li class="single-block shadow-default google-account flex"><p class="additional-info"><img
                                     src="{{ MEDIA_URL }}icons/google.png" class="icon-personal-info">Google</p>
                                 {% if not google_account_id %}
-                                    <button class="right" onclick="document.location=`{% provider_login_url 'google' process="connect" next="/" %}`">
+                                    <button class="right"
+                                            onclick="document.location=`{% provider_login_url 'google' process="connect" next="/" %}`">
                                         Приєднати
                                     </button>{% else %}
                                     <button class="right" onclick="sendPostForDelete({{ google_account_id }})"
                                             style="background-color: red">Відв'язати
                                     </button>{% endif %}</li>
-                            <li class="single-block shadow-default facebook-account flex"><p class="additional-info"><img
-                                    src="{{ MEDIA_URL }}icons/facebook.png" class="icon-personal-info">Facebook:</p>
+                            <li class="single-block shadow-default facebook-account flex"><p class="additional-info">
+                                <img
+                                        src="{{ MEDIA_URL }}icons/facebook.png" class="icon-personal-info">Facebook:</p>
                                 {% if not facebook_account_id %}
-                                    <button class="right" onclick="document.location=`{% provider_login_url 'facebook' process="connect" next="/" %}`">
+                                    <button class="right"
+                                            onclick="document.location=`{% provider_login_url 'facebook' process="connect" next="/" %}`">
                                         Приєднати
                                     </button>{% else %}
                                     <button class="right" onclick="sendPostForDelete({{ facebook_account_id }})"
                                             style="background-color: red">Відв'язати
                                     </button>{% endif %}
                             </li>
-                            <li class="single-block shadow-default telegram-account flex button-row"><p class="additional-info"><img
+                            <li class="single-block shadow-default telegram-account flex button-row"><p
+                                    class="additional-info"><img
                                     src="{{ MEDIA_URL }}icons/telegram.png" class="icon-personal-info">Telegram:</p>
                                 {% if not custom_telegram_account_id %}
                                     <div class="additional-info">{% include 'account/snippets/telegram_widget.html' with process="connect" %}</div>{% else %}
@@ -128,7 +132,7 @@
                             </div>
                             <ul>
                                 {% for field in form %}
-                                    {% if field.label != 'send_news_to_email' and field.label != 'countdown_to_email' %}
+                                    {% if field.label != 'send_news_to_email' and field.label != 'countdown_to_email' and field.label != 'send_news_to_telegram' and field.label != 'countdown_to_telegram' %}
                                         <li class="single-block shadow-default flex"><p
                                                 class="additional-info">{{ field.label|capfirst }}</p>{{ field }}</li>
                                     {% endif %}
@@ -150,13 +154,18 @@
                                         class="additional-info">Отримувати вподобання на
                                     пошту</p>{{ form.send_news_to_email }}
                                 </li>
+                                <li class="single-block shadow-default flex">
+                                    <p class="additional-info">Період між відправкою новин в телеграм, у хвилинах!</p>
+                                    <div class="single-content">
+                                        {{ form.countdown_to_telegram }}
+                                    </div>
+                                </li>
                                 <li class="single-block shadow-default flex"><p class="additional-info">Відправка новин
-                                    у Telegram (потрібен
-                                    преміум)</p>
-                                    <input id="finances" type="checkbox" class="shadow-default switch" disabled></li>
+                                    у Telegram </p>
+                                    {{ form.send_news_to_telegram }}
                             </ul>
                             <div class="flex top-space button-row">
-                                <button type="submit" class="shadow-default">Зберегти все
+                                <button type="submit" class="shadow-default">Зберегти все</button>
                             </div>
                         </div>
                     </form>

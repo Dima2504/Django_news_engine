@@ -10,6 +10,7 @@ import logging
 from auth_system.models import User
 from news.models import History
 from news.models import News, Category
+import requests
 
 logger = logging.getLogger('news.tasks')
 
@@ -47,7 +48,7 @@ def delete_old_news_from_db():
 
 def send_one_news_to_one_user(user_id):
     user = User.objects.get(id=user_id)
-    news = News.objects.exclude(users_saw=user).filter(category__in=user.categories.all()).last()
+    news = News.objects.exclude(users_saw=user).filter(category__in=user.categories_email.all()).last()
     if send_mail(news.title, news.description, from_email=settings.DEFAULT_FROM_EMAIL,
                  recipient_list=[user.email, ]) == 1:
         logger.info(f'User {user.email} receive news {news.id} on email')
@@ -55,3 +56,18 @@ def send_one_news_to_one_user(user_id):
         logger.info(f'Create relationship with user {user.email} and news {news.id}')
     else:
         logging.warning(f'{user.email} did not receive {news.id}')
+
+
+def send_one_news_on_telegram(user_id, telegram_id):
+    user = User.objects.get(id=user_id)
+    news = News.objects.exclude(users_saw=user).filter(category__in=user.categories_telegram.all()).last()
+    if news.url_to_image:
+        response = requests.post(f'https://api.telegram.org/bot{settings.TELEGRAM_MAILING_BOT_TOKEN}/sendPhoto', data={'chat_id': telegram_id, 'photo': news.url_to_image, 'caption': news.description}).json()
+    else:
+        response = requests.post(f'https://api.telegram.org/bot{settings.TELEGRAM_MAILING_BOT_TOKEN}/sendMessage', data={'chat_id': telegram_id, 'text': news.title + '\n\n' + news.description}).json()
+    if response['ok']:
+        logger.info(f'User {user.email} receive news {news.id} on email')
+        History.objects.update_or_create(user_id=user_id, news_id=news.id, defaults={'checked_on': History.ON_TELEGRAM})
+        logger.info(f'Create relationship with user {user.email} and news {news.id}')
+    else:
+        logging.warning(f'{user.email} did not receive {news.id}: {response["description"]}')

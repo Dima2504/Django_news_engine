@@ -3,6 +3,7 @@ from news_engine import celery_app
 from .service import pick_top_headlines
 from .service import delete_old_news_from_db
 from .service import send_one_news_to_one_user
+from .service import send_one_news_on_telegram
 
 from celery.utils.log import get_task_logger
 
@@ -24,3 +25,8 @@ def clear_db():
 @celery_app.task
 def send_one_news_to_one_user_task(user_id):
     send_one_news_to_one_user(user_id)
+
+
+@celery_app.task
+def send_one_news_on_telegram_task(user_id, telegram_id):
+    send_one_news_on_telegram(user_id, telegram_id)

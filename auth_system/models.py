@@ -20,6 +20,8 @@ from news.models import Category
 from news.models import News
 from news.models import History
 
+from allauth.socialaccount.models import SocialAccount
+
 
 class CustomUserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -86,8 +88,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
 
-    categories = models.ManyToManyField(Category, related_name='users',
-                                        help_text='Категорії, які користувач відслідковує', blank=True)
+    categories_email = models.ManyToManyField(Category, related_name='users_email',
+                                              help_text='Категорії, новини з яких користувач хоче бачити на пошті',
+                                              blank=True)
+    categories_telegram = models.ManyToManyField(Category, related_query_name='users_telegram',
+                                                 help_text='Категорії, новини з яких користувач хоче бачити на в телеграмі',
+                                                 blank=True)
 
     last_password_change = models.DateTimeField('Част останньої зміни паролю',
                                                 help_text='Дата і час, коли було останній раз змінено пароль, якщо не мінявся, то дата створення',
@@ -95,15 +101,28 @@ class User(AbstractBaseUser, PermissionsMixin):
     checked_news = models.ManyToManyField(News, through=History, related_name='users_saw')
 
     email_periodic_task = models.OneToOneField(PeriodicTask, verbose_name="Зв'язана задача по відправці новин на пошту",
-                                               on_delete=models.SET_NULL, null=True, blank=True)
+                                               on_delete=models.SET_NULL, null=True, blank=True,
+                                               related_name='user_email')
+    telegram_periodic_task = models.OneToOneField(PeriodicTask,
+                                                  verbose_name="Зв'язана задача по відправці новин в телеграм",
+                                                  on_delete=models.SET_NULL, null=True, blank=True,
+                                                  related_name='user_telegram')
 
     _send_news_to_email = models.BooleanField('Надсилати новини на пошту',
                                               help_text='Активуйте, якщо хочете отримувати новини на пошту',
                                               default=False)
 
+    _send_news_to_telegram = models.BooleanField('Надсилати новини на в телеграм',
+                                                 help_text='Активуйте, якщо хочете отримувати новини в телеграмі',
+                                                 default=False)
+
     _countdown_to_email = models.DurationField(verbose_name='Відрізок часу між відправкою новин на пошту',
                                                help_text='Найменший період між відправленнями новин на пошту',
                                                default=datetime.timedelta(minutes=60))
+
+    _countdown_to_telegram = models.DurationField(verbose_name='Відрізок часу між відправкою новин в в телеграм',
+                                                  help_text='Найменший період між відправленнями новин в телеграм',
+                                                  default=datetime.timedelta(minutes=60))
 
     objects = CustomUserManager()
 
@@ -133,42 +152,86 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.last_password_change = timezone.now()
         self.save()
 
-    def _get_or_create_interval(self):
-        return IntervalSchedule.objects.get_or_create(every=self._countdown_to_email.seconds / 60,
+    def _get_or_create_interval(self, task_type):
+        if task_type == 'email':
+            return IntervalSchedule.objects.get_or_create(every=self._countdown_to_email.seconds / 60,
                                                       period=IntervalSchedule.MINUTES)
-
-    def _set_or_create_periodic_task(self, enabled=True):
-        if not self.email_periodic_task:
-            interval, _ = self._get_or_create_interval()
-            self.email_periodic_task = PeriodicTask.objects.create(interval=interval, name=f'"{self.email}" PT',
-                                                                   task='news.tasks.send_one_news_to_one_user_task',
-                                                                   args=json.dumps([self.id]), enabled=enabled)
+        elif task_type == 'telegram':
+            return IntervalSchedule.objects.get_or_create(every=self._countdown_to_telegram.seconds / 60,
+                                                          period=IntervalSchedule.MINUTES)
         else:
-            self.email_periodic_task.enabled = enabled
-            self.email_periodic_task.save()
+            raise ValueError('task must have value: "telegram" or "email" ')
+
+    def _set_or_create_periodic_task(self, task_type, enabled=True):
+        if task_type == 'email':
+            if not self.email_periodic_task:
+                interval, _ = self._get_or_create_interval(task_type=task_type)
+                self.email_periodic_task = PeriodicTask.objects.create(interval=interval,
+                                                                       name=f'"{self.email}" email PT',
+                                                                       task='news.tasks.send_one_news_to_one_user_task',
+                                                                       args=json.dumps([self.id]), enabled=enabled)
+            else:
+                self.email_periodic_task.enabled = enabled
+                self.email_periodic_task.save()
+        elif task_type == 'telegram':
+            if not self.telegram_periodic_task:
+                interval, _ = self._get_or_create_interval(task_type=task_type)
+                telegram_id = SocialAccount.objects.get(user=self).uid
+                self.telegram_periodic_task = PeriodicTask.objects.create(interval=interval,
+                                                                          name=f'"{self.email}" telegram PT',
+                                                                          task='news.tasks.send_one_news_on_telegram_task',
+                                                                          args=json.dumps([self.id, telegram_id]),
+                                                                          enabled=enabled)
+            else:
+                self.telegram_periodic_task.enabled = enabled
+                self.telegram_periodic_task.save()
+        else:
+            raise ValueError('task must have value: "telegram" or "email" ')
 
     send_news_to_email = property()
     countdown_to_email = property()
+    send_news_to_telegram = property()
+    countdown_to_telegram = property()
 
     @send_news_to_email.getter
     def send_news_to_email(self):
         return self._send_news_to_email
 
+    @send_news_to_telegram.getter
+    def send_news_to_telegram(self):
+        return self._send_news_to_telegram
+
     @send_news_to_email.setter
     def send_news_to_email(self, is_send):
         self._send_news_to_email = is_send
-        self._set_or_create_periodic_task(enabled=is_send)
+        self._set_or_create_periodic_task(task_type='email', enabled=is_send)
+
+    @send_news_to_telegram.setter
+    def send_news_to_telegram(self, is_send):
+        self._send_news_to_telegram = is_send
+        self._set_or_create_periodic_task(task_type='telegram', enabled=is_send)
 
     @countdown_to_email.getter
     def countdown_to_email(self):
         return self._countdown_to_email
 
+    @countdown_to_telegram.getter
+    def countdown_to_telegram(self):
+        return self._countdown_to_telegram
+
     @countdown_to_email.setter
     def countdown_to_email(self, timedelta):
         self._countdown_to_email = timedelta
         if self.email_periodic_task:
-            self.email_periodic_task.interval, _ = self._get_or_create_interval()
+            self.email_periodic_task.interval, _ = self._get_or_create_interval(task_type='email')
             self.email_periodic_task.save()
+
+    @countdown_to_telegram.setter
+    def countdown_to_telegram(self, timedelta):
+        self._countdown_to_telegram = timedelta
+        if self.telegram_periodic_task:
+            self.telegram_periodic_task.interval, _ = self._get_or_create_interval(task_type='telegram')
+            self.telegram_periodic_task.save()
 
     def __str__(self):
         return self.email
@@ -178,4 +241,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 def delete_user_email_task(sender, instance, using, **kwargs):
     if instance.email_periodic_task:
         temp = instance.email_periodic_task
+        temp.delete()
+    if instance.telegram_periodic_task:
+        temp = instance.telegram_periodic_task
         temp.delete()

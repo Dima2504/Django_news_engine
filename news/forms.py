@@ -12,3 +12,11 @@ class PersonalPreferencesForm(forms.Form):
             self.fields[category.slug] = forms.BooleanField(label=category.name, required=False, widget=forms.CheckboxInput(attrs={'class': 'shadow-default switch checked-hidden', 'id': 'finances'}))
         self.fields['send_news_to_email'] = forms.BooleanField(label='send_news_to_email', required=False, widget=forms.CheckboxInput(attrs={'class': 'shadow-default switch', 'id': 'send-news-check'}))
         self.fields['countdown_to_email'] = forms.IntegerField(label='countdown_to_email', required=False, widget=forms.TextInput(attrs={'class': 'shadow-default checked-hidden', 'placeholder': 'Період в хвилинах'}))
+        self.fields['send_news_to_telegram'] = forms.BooleanField(label='send_news_to_telegram', required=False,
+                                                               widget=forms.CheckboxInput(
+                                                                   attrs={'class': 'shadow-default switch',
+                                                                          'id': 'send-news-check'}))
+        self.fields['countdown_to_telegram'] = forms.IntegerField(label='countdown_to_telegram', required=False,
+                                                               widget=forms.TextInput(
+                                                                   attrs={'class': 'shadow-default checked-hidden',
+                                                                          'placeholder': 'Період в хвилинах'}))

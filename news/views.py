@@ -85,10 +85,13 @@ class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
         user = request.user
         logger.debug(f'User {user.id} in personal account GET')
         form = PersonalPreferencesForm()
-        for category in user.categories.filter(is_main=True).only('slug'):
+        for category in user.categories_email.filter(is_main=True).only('slug'):
             form.initial[category.slug] = True
         form.initial['send_news_to_email'] = user.send_news_to_email
         form.initial['countdown_to_email'] = user.countdown_to_email.seconds / 60
+
+        form.initial['send_news_to_telegram'] = user.send_news_to_telegram
+        form.initial['countdown_to_telegram'] = user.countdown_to_telegram.seconds / 60
 
         social_accounts = SocialAccount.objects.filter(user=user).only('provider')
 
@@ -101,9 +104,14 @@ class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
         form = PersonalPreferencesForm(request.POST)
         if form.is_valid():
             categories = Category.objects.filter(slug__in=form.changed_data)
-            user.categories.set(categories, clear=True)
+            user.categories_email.set(categories, clear=True)
+
+            print(form.cleaned_data)
             user.countdown_to_email = datetime.timedelta(minutes=int(form.cleaned_data['countdown_to_email']))
             user.send_news_to_email = form.cleaned_data['send_news_to_email']
+
+            user.countdown_to_telegram = datetime.timedelta(minutes=int(form.cleaned_data['countdown_to_telegram']))
+            user.send_news_to_telegram = form.cleaned_data['send_news_to_telegram']
 
             user.save()
             messages.success(request, 'Дані успішно збережені!')
