@@ -176,11 +176,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         elif task_type == 'telegram':
             if not self.telegram_periodic_task:
                 interval, _ = self._get_or_create_interval(task_type=task_type)
-                telegram_id = SocialAccount.objects.get(user=self).uid
                 self.telegram_periodic_task = PeriodicTask.objects.create(interval=interval,
                                                                           name=f'"{self.email}" telegram PT',
                                                                           task='news.tasks.send_one_news_on_telegram_task',
-                                                                          args=json.dumps([self.id, telegram_id]),
+                                                                          args=json.dumps([self.id]),
                                                                           enabled=enabled)
             else:
                 self.telegram_periodic_task.enabled = enabled

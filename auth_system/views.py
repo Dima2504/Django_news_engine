@@ -20,6 +20,8 @@ class DisconnectSocialAccountView(View):
     def post(self, request):
         if request.is_ajax:
             account = SocialAccount.objects.get(id=request.POST.get('social_account_id'))
+            if account.provider == 'custom_telegram':
+                request.user.send_news_to_telegram = False
             account.delete()
             get_account_adapter().add_message(
                 request,

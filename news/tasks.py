@@ -28,5 +28,5 @@ def send_one_news_to_one_user_task(user_id):
 
 
 @celery_app.task
-def send_one_news_on_telegram_task(user_id, telegram_id):
-    send_one_news_on_telegram(user_id, telegram_id)
+def send_one_news_on_telegram_task(user_id):
+    send_one_news_on_telegram(user_id)

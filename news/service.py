@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.mail import send_mail
 from django.utils.timezone import make_aware
+from allauth.socialaccount.models import SocialAccount
 
 import datetime
 import logging
@@ -71,8 +72,9 @@ def generate_news_caption(news: News):
     return title + description + url + time
 
 
-def send_one_news_on_telegram(user_id, telegram_id):
+def send_one_news_on_telegram(user_id):
     user = User.objects.get(id=user_id)
+    telegram_id = SocialAccount.objects.get(user=user).uid
     categories = user.categories_telegram.all()
     if categories.exists():
         news = News.objects.exclude(users_saw=user).filter(category__in=categories).last()
@@ -81,7 +83,7 @@ def send_one_news_on_telegram(user_id, telegram_id):
     if news.url_to_image:
         response = requests.post(f'https://api.telegram.org/bot{settings.SOCIALACCOUNT_PROVIDERS["custom_telegram"]["TOKEN"]}/sendPhoto', data={'chat_id': telegram_id, 'photo': news.url_to_image, 'caption': generate_news_caption(news), 'parse_mode': 'HTML'}).json()
     else:
-        response = requests.post(f'https://api.telegram.org/bot{settings.SOCIALACCOUNT_PROVIDERS["custom_telegram"]["TOKEN"]}/sendMessage', data={'chat_id': telegram_id, 'text': news.title + '\n\n' + generate_news_caption(news)}).json()
+        response = requests.post(f'https://api.telegram.org/bot{settings.SOCIALACCOUNT_PROVIDERS["custom_telegram"]["TOKEN"]}/sendMessage', data={'chat_id': telegram_id, 'text': news.title + '\n\n' + generate_news_caption(news), 'parse_mode': 'HTML'}).json()
     if response['ok']:
         logger.info(f'User {user.email} receive news {news.id} on email')
         History.objects.update_or_create(user_id=user_id, news_id=news.id, defaults={'checked_on': History.ON_TELEGRAM})
