@@ -49,7 +49,11 @@ def delete_old_news_from_db():
 
 def send_one_news_to_one_user(user_id):
     user = User.objects.get(id=user_id)
-    news = News.objects.exclude(users_saw=user).filter(category__in=user.categories_email.all()).last()
+    categories = user.categories_email.all()
+    if categories.exists():
+        news = News.objects.exclude(users_saw=user).filter(category__in=categories).last()
+    else:
+        news = News.objects.exclude(users_saw=user).last()
     if send_mail(news.title, news.description, from_email=settings.DEFAULT_FROM_EMAIL,
                  recipient_list=[user.email, ]) == 1:
         logger.info(f'User {user.email} receive news {news.id} on email')
@@ -69,7 +73,11 @@ def generate_news_caption(news: News):
 
 def send_one_news_on_telegram(user_id, telegram_id):
     user = User.objects.get(id=user_id)
-    news = News.objects.exclude(users_saw=user).filter(category__in=user.categories_telegram.all()).last()
+    categories = user.categories_telegram.all()
+    if categories.exists():
+        news = News.objects.exclude(users_saw=user).filter(category__in=categories).last()
+    else:
+        news = News.objects.exclude(users_saw=user).last()
     if news.url_to_image:
         response = requests.post(f'https://api.telegram.org/bot{settings.SOCIALACCOUNT_PROVIDERS["custom_telegram"]["TOKEN"]}/sendPhoto', data={'chat_id': telegram_id, 'photo': news.url_to_image, 'caption': generate_news_caption(news), 'parse_mode': 'HTML'}).json()
     else:

@@ -32,7 +32,7 @@
                                 <button class="right">Змінити</button>
                             </li>
                             <li class="single-block shadow-default flex"><p class="additional-info">
-                                Фамілія: {{ user.last_name }}</p>
+                                Призвище: {{ user.last_name }}</p>
                                 <button class="right">Змінити</button>
                             </li>
                             <li class="single-block shadow-default flex"><p class="additional-info">
@@ -123,6 +123,7 @@
                             }
                             return cookieValue;
                         }
+
                         function sendPostForDelete(id) {
                             let request = new XMLHttpRequest();
                             request.open('POST', `{% url 'disconnect_social_account' %}`);
@@ -176,9 +177,14 @@
                                         {{ form.countdown_to_telegram }}
                                     </div>
                                 </li>
-                                <li class="single-block shadow-default flex"><p class="additional-info">Відправка новин
-                                    у Telegram </p>
-                                    {{ form.send_news_to_telegram }}
+
+                                <li class="single-block shadow-default flex"><p class="additional-info">Відправка новин у Телеграм: для того, щоб отримувати новини в телеграм, спочатку прив'яжіть Телеграм-аккаунт</p>
+                                    {% if not custom_telegram_account_id %}
+                                        <input type="checkbox" class="shadow-default switch" disabled>
+                                    {% else %}
+                                        {{ form.send_news_to_telegram }}
+                                    {% endif %}
+                                </li>
                             </ul>
                             <div class="flex top-space button-row">
                                 <button type="submit" class="shadow-default">Зберегти все</button>
