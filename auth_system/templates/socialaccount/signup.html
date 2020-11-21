@@ -6,7 +6,7 @@
 
 {% block content %}
     <div class="top-space section-block col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 offset-md-0 col-sm-12 offset-sm-0">
-        <div class="section-body">
+        <div class="section-body-misc">
             <div class="big-text">{% trans "Sign Up" %}</div>
             <div class="section-header">E-mail:</div>
             <form class="signup" id="signup_form" action="{% url 'socialaccount_signup' %}" method="post">
@@ -19,15 +19,18 @@
                     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
                 {% endif %}
                 <div class="single-content" style="margin-bottom: 40px">
-                    <p class="additional-info">Ви використали свій Телеграм акаунт для реєстрації. Тепер потрбіно ввести Вашу електронну пошту</p>
+                    <p class="additional-info">Ви використали свій Телеграм акаунт для реєстрації. Тепер потрбіно ввести
+                        Вашу електронну пошту</p>
                 </div>
-                <div class="section-float-button">
-                    <button type="submit" class="shadow-default right-button">{% trans "Sign Up" %} &raquo;</button>
+                <div class="flex top-space button-row">
+                    <a>
+                        <button type="submit" class="shadow-default">{% trans "Sign Up" %} &raquo;</button>
+                    </a>
+                    <a href="{% url 'account_login' %}">
+                        <button type="button" class="shadow-default">Повернутися до входу</button>
+                    </a>
                 </div>
             </form>
-            <a href="{% url 'account_login' %}">
-                <button class="shadow-default">Повернутися до входу</button>
-            </a>
         </div>
     </div>
 {% endblock %}
