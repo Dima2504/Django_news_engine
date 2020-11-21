@@ -1,4 +1,4 @@
-<script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="SlavviicBot" data-size="large"
+<script async src="https://telegram.org/js/telegram-widget.js?14" data-telegram-login="{{ TELEGRAM_BOT_USERNAME }}" data-size="large"
         data-radius="0"
         data-auth-url="{% if process == "connect" %}{% url 'custom_telegram_connect' %}{% else %}{% url 'custom_telegram_login' %}{% endif %}"
         data-request-access="write"></script>

@@ -209,14 +209,13 @@ SOCIALACCOUNT_PROVIDERS = {
         'METHOD': 'oauth2',
     },
     'custom_telegram': {
-        'TOKEN': os.getenv('TELEGRAM_AUTH_BOT_TOKEN'),
+        'TOKEN': os.getenv('TELEGRAM_BOT_TOKEN'),
     }
 }
 SOCIALACCOUNT_QUERY_EMAIL = True
-TELEGRAM_BOT_USERNAME = os.getenv('TELEGRAM_BOT_USERNAME')
+TELEGRAM_BOT_USERNAME = 'PicleMailingBot'
 
-TELEGRAM_MAILING_BOT_TOKEN = os.getenv('TELEGRAM_MAILING_BOT_TOKEN')
-TELEGRAM_MAILING_BOT_LINK = os.getenv('TELEGRAM_MAILING_BOT_LINK')
+TELEGRAM_BOT_LINK = os.getenv('TELEGRAM_BOT_LINK')
 ACCOUNT_FORMS = {
     'login': 'auth_system.forms.MyLoginForm',
     'signup': 'auth_system.forms.MySignupForm',

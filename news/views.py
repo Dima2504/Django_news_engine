@@ -5,6 +5,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.conf import settings
 
 from django.http import JsonResponse, HttpResponseNotFound
 from django.db.models import Q
@@ -96,7 +97,7 @@ class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
         social_accounts = SocialAccount.objects.filter(user=user).only('provider')
 
         return render(request, template_name='news/personal_account.html',
-                      context={'form': form, **{social_account.provider + "_account_id": social_account.id for social_account in social_accounts}})
+                      context={'form': form, 'TELEGRAM_BOT_USERNAME': settings.TELEGRAM_BOT_USERNAME, **{social_account.provider + "_account_id": social_account.id for social_account in social_accounts}})
 
     def post(self, request):
         user = request.user
