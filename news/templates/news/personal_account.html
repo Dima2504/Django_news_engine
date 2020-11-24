@@ -145,17 +145,47 @@
                         {% csrf_token %}
                         <div class="section-block shadow-default">
                             <div class="section-header"><img class="icon-personal-info"
-                                                             src="{{ MEDIA_URL }}icons/preferences.png">Уподобання
+                                                             src="{{ MEDIA_URL }}icons/preferences.png">Уподобання для електронної пошти
                             </div>
                             <ul>
-                                {% for field in form %}
-                                    {% if field.label != 'send_news_to_email' and field.label != 'countdown_to_email' and field.label != 'send_news_to_telegram' and field.label != 'countdown_to_telegram' %}
-                                        <li class="single-block shadow-default flex"><p
-                                                class="additional-info">{{ field.label|capfirst }}</p>{{ field }}</li>
-                                    {% endif %}
-                                {% endfor %}
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.general_email.field.label|capfirst }}</p>{{ form.general_email }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.sports_email.field.label|capfirst }}</p>{{ form.sports_email }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.entertainment_email.field.label|capfirst }}</p>{{ form.entertainment_email }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.science_email.field.label|capfirst }}</p>{{ form.science_email }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.business_email.field.label|capfirst }}</p>{{ form.business_email }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.technology_email.field.label|capfirst }}</p>{{ form.technology_email }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.health_email.field.label|capfirst }}</p>{{ form.health_email }}</li>
                             </ul>
                         </div>
+                    <div class="section-block shadow-default">
+                            <div class="section-header"><img class="icon-personal-info"
+                                                             src="{{ MEDIA_URL }}icons/preferences.png">Уподобання для Телеграму
+                            </div>
+                            <ul>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.general_telegram.field.label|capfirst }}</p>{{ form.general_telegram }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.sports_telegram.field.label|capfirst }}</p>{{ form.sports_telegram }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.entertainment_telegram.field.label|capfirst }}</p>{{ form.entertainment_telegram }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.science_telegram.field.label|capfirst }}</p>{{ form.science_telegram }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.business_telegram.field.label|capfirst }}</p>{{ form.business_telegram }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.technology_telegram.field.label|capfirst }}</p>{{ form.technology_telegram }}</li>
+                                <li class="single-block shadow-default flex"><p
+                                        class="additional-info">{{ form.health_telegram.field.label|capfirst }}</p>{{ form.health_telegram }}</li>
+                            </ul>
+                        </div>
+
                         <div class="section-block shadow-default">
                             <div class="section-header"><img class="icon-personal-info"
                                                              src="{{ MEDIA_URL }}icons/mail.png">Розсилка

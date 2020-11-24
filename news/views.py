@@ -87,7 +87,10 @@ class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
         logger.debug(f'User {user.id} in personal account GET')
         form = PersonalPreferencesForm()
         for category in user.categories_email.filter(is_main=True).only('slug'):
-            form.initial[category.slug] = True
+            form.initial[category.slug+'_email'] = True
+        for category in user.categories_telegram.filter(is_main=True).only('slug'):
+            form.initial[category.slug+'_telegram'] = True
+
         form.initial['send_news_to_email'] = user.send_news_to_email
         form.initial['countdown_to_email'] = user.countdown_to_email.seconds / 60
 
@@ -104,8 +107,17 @@ class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
         logger.debug(f'User {user.id} in personal account POST')
         form = PersonalPreferencesForm(request.POST)
         if form.is_valid():
-            categories = Category.objects.filter(slug__in=form.changed_data)
+
+
+            changed_data_email = [field[:-6] for field in form.changed_data if field.endswith('_email')]
+            changed_data_telegram = [field[:-9] for field in form.changed_data if field.endswith('_telegram')]
+
+
+            categories = Category.objects.filter(slug__in=changed_data_email)
             user.categories_email.set(categories, clear=True)
+
+            categories = Category.objects.filter(slug__in=changed_data_telegram)
+            user.categories_telegram.set(categories, clear=True)
 
             user.countdown_to_email = datetime.timedelta(minutes=int(form.cleaned_data['countdown_to_email']))
             user.send_news_to_email = form.cleaned_data['send_news_to_email']
@@ -147,3 +159,5 @@ class AjaxFilter(View):
             return JsonResponse({'data': list(articles)})
         else:
             return HttpResponseNotFound()
+
+

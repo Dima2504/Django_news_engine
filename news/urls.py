@@ -10,4 +10,5 @@ urlpatterns = [
     path('ajax-filter/', AjaxFilter.as_view(), name='ajax_filter'),
     path('<slug:slug>/', CategoryNews.as_view(), name='category_news'),
     path('detail/<slug:slug>/', NewsDetail.as_view(), name='news_detail'),
+
 ]
