@@ -159,5 +159,3 @@ class AjaxFilter(View):
             return JsonResponse({'data': list(articles)})
         else:
             return HttpResponseNotFound()
-
-

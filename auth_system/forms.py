@@ -88,3 +88,20 @@ class MySocialSignupForm(SocialSignupForm):
         super().__init__(*args, **kwargs)
         self.fields['email'].widget = forms.TextInput(
             attrs={'type': 'email', 'class': 'shadow-default', 'placeholder': 'Ел. Пошта'})
+
+
+class ReviewForm(forms.Form):
+    content = forms.CharField(max_length=300, widget=forms.TextInput(attrs={
+        'class': 'shadow-default',
+        'placeholder': 'Введіть Ваш відгук',
+    }), label='Відгук')
+    stars = forms.IntegerField(label='Оцінка', widget=forms.TextInput(attrs={
+        'class': 'shadow-default',
+        'placeholder': 'Оцінка від 1 до 10',
+    }))
+
+    def clean_stars(self):
+        value = self.cleaned_data['stars']
+        if value < 1 or value > 10:
+            raise forms.ValidationError('Оцінка повинна бути в діапазоні від 1 до 10')
+        return value

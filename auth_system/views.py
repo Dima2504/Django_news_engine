@@ -9,6 +9,13 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponse
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import ReviewForm
+from django.shortcuts import render
+from .models import Review
+from news.models import Category
+from django.shortcuts import redirect
+
 class MyLoginView(LoginView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -33,3 +40,24 @@ class DisconnectSocialAccountView(View):
             )
             return HttpResponse(status=200)
         return HttpResponse(status=400)
+
+
+
+class CreateReview(LoginRequiredMixin, View):
+    def get(self, request):
+        categories = Category.objects.filter(is_main=True)
+        form = ReviewForm()
+        return render(request, template_name='auth_system/create_review.html', context={'form': form, 'categories': categories})
+
+    def post(self, request):
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            Review.objects.create(content=form.cleaned_data['content'], stars=form.cleaned_data['stars'], user_left=request.user)
+            messages.info(request, 'Відгук успішно збережено, дякуємо Вам!')
+            return redirect('news:start')
+        else:
+            categories = Category.objects.filter(is_main=True)
+            return render(request, template_name='auth_system/create_review.html',
+                          context={'form': form, 'categories': categories})
+
+

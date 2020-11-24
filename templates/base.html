@@ -104,9 +104,9 @@
                             <li class="nav-item">
                                 Доброго дня{% if user.is_authenticated %}, {{ user.first_name }}{% endif %}!
                             </li>
-                            <li class="nav-item">
-                                {city} {city_temp}
-                            </li>
+                            <a href="{% url 'create_review' %}"><li class="nav-item">
+                                Надіслати відгук
+                            </li></a>
                         <a href="{% url 'news:news_history' %}" class="nav-link">
                             <li class="nav-item">
                                 <img src="{{ MEDIA_URL }}icons/filter.png" class="icon">
@@ -139,14 +139,7 @@
             {% block content %}{% endblock %}
             {% block footer %}
                 <div>
-                    {% for i in '012345'|make_list %}
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    {% endfor %}
+
                 </div>
             {% endblock %}
         </div>

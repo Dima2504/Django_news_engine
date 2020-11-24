@@ -244,3 +244,18 @@ def delete_user_email_task(sender, instance, using, **kwargs):
     if instance.telegram_periodic_task:
         temp = instance.telegram_periodic_task
         temp.delete()
+
+
+
+class Review(models.Model):
+    content = models.TextField(verbose_name='Відгук')
+    published_at = models.DateTimeField(auto_now_add=True, verbose_name='Час, коли було отримано')
+    user_left = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Користувач, що залишив')
+    stars = models.IntegerField(verbose_name='Кількість зірок')
+
+    class Meta:
+        verbose_name = 'Відгук'
+        verbose_name_plural = 'Відгуки'
+
+    def __str__(self):
+        return f'Відгук користувача: {self.user_left.email}: "{self.content}"'
