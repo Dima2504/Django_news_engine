@@ -213,6 +213,7 @@ button.btn:active {
 	background-color: #252525;
 	color: #C8C8C8;
 	z-index: 10;
+	transition: 0.3s;
 }
 
 #sidebar-menu a {
@@ -234,6 +235,10 @@ button.btn:active {
 	color: white;
 }
 
+.sb-off {
+margin-left: -1500px
+}
+
 .sidebar-active {
 	border-left: 10px solid #D80000!important;
 	color: white;
@@ -242,6 +247,7 @@ button.btn:active {
 #main {
 	padding: 0;
 	position: relative;
+	transition: 0.3s;
 }
 
 .navbar-button {
