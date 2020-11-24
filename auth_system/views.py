@@ -15,6 +15,7 @@ from django.shortcuts import render
 from .models import Review
 from news.models import Category
 from django.shortcuts import redirect
+from news.tasks import send_mail_task
 
 class MyLoginView(LoginView):
     def get_context_data(self, **kwargs):
@@ -54,6 +55,7 @@ class CreateReview(LoginRequiredMixin, View):
         if form.is_valid():
             Review.objects.create(content=form.cleaned_data['content'], stars=form.cleaned_data['stars'], user_left=request.user)
             messages.info(request, 'Відгук успішно збережено, дякуємо Вам!')
+            send_mail_task.delay(request.user.email)
             return redirect('news:start')
         else:
             categories = Category.objects.filter(is_main=True)
