@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'news.apps.NewsConfig',
     'silk',
     'django_celery_beat',
+    'rest_framework',
 ]
 
 AUTHENTICATION_BACKENDS = [
