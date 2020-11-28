@@ -55,7 +55,7 @@ def send_one_news_to_one_user(user_id):
         news = News.objects.exclude(users_saw=user).filter(category__in=categories).last()
     else:
         news = News.objects.exclude(users_saw=user).last()
-    if send_mail(news.title or '', news.description or '', from_email=settings.DEFAULT_FROM_EMAIL,
+    if send_mail(news.title or '', (news.description or '')+'\n\nПосилання на оригінал: '+ news.url, from_email=settings.DEFAULT_FROM_EMAIL,
                  recipient_list=[user.email, ]) == 1:
         logger.info(f'User {user.email} receive news {news.id} on email')
         History.objects.update_or_create(user_id=user_id, news_id=news.id, defaults={'checked_on': History.ON_EMAIL})
