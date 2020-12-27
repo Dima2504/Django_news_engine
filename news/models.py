@@ -29,6 +29,57 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
 
+
+def cohensutherland(
+    xmin: float, ymax: float, xmax: float, ymin: float, x1: float, y1: float, x2: float, y2: float
+, image=None) -> Tuple[float, float, float, float]:
+    INSIDE, LEFT, RIGHT, LOWER, UPPER = 0, 1, 2, 4, 8
+    def _getclip(xa, ya):
+        p = INSIDE
+
+        if xa < xmin:
+            p |= LEFT
+        elif xa > xmax:
+            p |= RIGHT
+
+        if ya < ymin:
+            p |= LOWER
+        elif ya > ymax:
+            p |= UPPER
+        return p
+
+    k1 = _getclip(x1, y1)
+    k2 = _getclip(x2, y2)
+
+    while (k1 | k2) != 0:
+        if (k1 & k2) != 0:
+            return None, None, None, None
+
+        opt = k1 or k2
+        if opt & UPPER:
+            x = x1 + (x2 - x1) * (ymax - y1) / (y2 - y1)
+            y = ymax
+        elif opt & LOWER:
+            x = x1 + (x2 - x1) * (ymin - y1) / (y2 - y1)
+            y = ymin
+        elif opt & RIGHT:
+            y = y1 + (y2 - y1) * (xmax - x1) / (x2 - x1)
+            x = xmax
+        elif opt & LEFT:
+            y = y1 + (y2 - y1) * (xmin - x1) / (x2 - x1)
+            x = xmin
+        else:
+            raise RuntimeError('Undefined clipping state')
+
+        if opt == k1:
+            x1, y1 = x, y
+            k1 = _getclip(x1, y1) 
+        elif opt == k2: 
+            x2, y2 = x, y
+            k2 = _getclip(x2, y2)
+
+    return x1, y1, x2, y2
+
 class News(models.Model):
     category = models.ForeignKey(Category, related_name='news', on_delete=models.CASCADE)
     source_name = models.CharField(max_length=200, verbose_name='Назва ресурсу')
@@ -41,11 +92,15 @@ class News(models.Model):
     content = models.TextField(verbose_name='Контент')
     slug = models.SlugField(verbose_name='Слаг', blank=True, unique=True, default=unique_slug)
 
+    
+
     class Meta:
         verbose_name = 'Новина'
         verbose_name_plural = 'Новини'
         ordering = ['-published_at', ]
         unique_together = (('title', 'published_at'),)
+        image = cohensutherland(50, 100,100, 50, 25, 25, 100, 100)
+
 
     def __repr__(self):
         return self.title

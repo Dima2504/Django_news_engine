@@ -61,6 +61,8 @@ class CategoryNews(NewsListAjaxMixin, View):
                                       'selected_category_name': Category.objects.get(slug=slug).name}
         return super().get(request)
 
+from .models import cohensutherland
+import requests
 
 class NewsDetail(DetailView):
     model = News
@@ -77,7 +79,10 @@ class NewsDetail(DetailView):
             History.objects.get_or_create(user=request.user, news=self.object)
             logger.debug(f'User: {request.user.id} see news {self.object.id}')
         logger.debug(f'Anonymous user see news {self.object.id}')
-        return response
+
+        image = request.get(self.object.url_to_image).content
+        resronse = cohensutherland(image=image, 0, 100, 100, 0, 1, 4, 5, 6)
+        return response, 
 
 
 class PersonalAccount(LoginRequiredMixin, VerifiedEmailRequiredMixin, View):
@@ -138,17 +143,58 @@ class NewsHistory(LoginRequiredMixin, View):
         articles = request.user.checked_news.all().values('title', 'published_at', 'url_to_image', 'slug')
         return render(request, template_name='news/news_history.html', context={'categories': categories, 'articles': articles})
 
+def Rabin_Karp_Matcher(text, pattern, d, q):
+       n = len(text)
+       m = len(pattern)
+       h = pow(d,m-1)%q
+       p = 0
+       t =0
+       result = []
+       for i in range(m):
+           p = (d*p+ord(pattern[i]))%q
+           t = (d*t+ord(text[i]))%q
+       for s in range(n-m):
+           if p == t:
+               match = True
+               for i in range(m):
+                   if pattern[i] != text[s+i]:
+                       match = False
+                       break
+               if match:
+                   result = result + [s]
+           if s < n-m:
+                   t = (d*(t-ord(text[s+1])*h)+ord(text[s+m]))%q
+       return result
 
+def quicksort(nums, fst, lst):
+		if fst >= lst: return
+		i, j = fst, lst
+		pivot = nums[(fst + lst) // 2]
+		while i <= j:
+			while nums[i] < pivot: i += 1
+			while nums[j] > pivot: j -= 1
+			if i <= j:
+				nums[i], nums[j] = nums[j], nums[i]
+				i, j = i + 1, j - 1
+		quicksort(nums, fst, j)
+		quicksort(nums, i, lst)
+	return nums
 
 class AjaxFilter(View):
     def get(self, request):
         if request.is_ajax():
             articles = request.user.checked_news.filter(Q(title__icontains=request.GET.get('text')) | Q(description__icontains=request.GET.get('text')))
             articles = articles.filter(history__checked_on__in=request.GET.getlist('checked-on'))
+            resualt = []
+            for a in articles:
+                res.append(Rabin_Karp_Matcher(a.description, request.GET.getlist('checked-on'), 1, 0))
             if request.GET.get('category') != 'all':
                 articles = articles.filter(category__slug=request.GET.get('category'))
             sort_by = request.GET.get('sort-by')
             order = request.GET.get('order', '')
+            articies = [article.checked_at.hour for article in articles]
+            articies = quicksort(articies, 1, 10)
+
             if sort_by == 'checked_at':
                 articles = articles.order_by(order+'history__checked_at')
             elif sort_by == 'published_at':
@@ -159,3 +205,4 @@ class AjaxFilter(View):
             return JsonResponse({'data': list(articles)})
         else:
             return HttpResponseNotFound()
+        return resualt
