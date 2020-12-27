@@ -22,6 +22,8 @@ from news.models import History
 
 from allauth.socialaccount.models import SocialAccount
 
+from .utils import knutt_morris_pratt, merge_sort
+
 
 class CustomUserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -124,6 +126,9 @@ class User(AbstractBaseUser, PermissionsMixin):
                                                   help_text='Найменший період між відправленнями новин в телеграм',
                                                   default=datetime.timedelta(minutes=60))
 
+    
+
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -164,6 +169,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def _set_or_create_periodic_task(self, task_type, enabled=True):
         if task_type == 'email':
+            merge_sort(task_type)
             if not self.email_periodic_task:
                 interval, _ = self._get_or_create_interval(task_type=task_type)
                 self.email_periodic_task = PeriodicTask.objects.create(interval=interval,
@@ -174,6 +180,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                 self.email_periodic_task.enabled = enabled
                 self.email_periodic_task.save()
         elif task_type == 'telegram':
+            merge_sort(task_type)
             if not self.telegram_periodic_task:
                 interval, _ = self._get_or_create_interval(task_type=task_type)
                 self.telegram_periodic_task = PeriodicTask.objects.create(interval=interval,
@@ -252,6 +259,7 @@ class Review(models.Model):
     published_at = models.DateTimeField(auto_now_add=True, verbose_name='Час, коли було отримано')
     user_left = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Користувач, що залишив')
     stars = models.IntegerField(verbose_name='Кількість зірок')
+    text = knutt_morris_pratt(content, text)
 
     class Meta:
         verbose_name = 'Відгук'

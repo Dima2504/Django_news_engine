@@ -17,17 +17,22 @@ from news.models import Category
 from django.shortcuts import redirect
 from news.tasks import send_mail_task
 
+from .utils import knutt_morris_pratt
+
 class MyLoginView(LoginView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        knutt_morris_pratt(content['data'], self.object)
         context['TELEGRAM_BOT_USERNAME'] = settings.TELEGRAM_BOT_USERNAME
         return context
 
+from .utils import HashTable
 
 class DisconnectSocialAccountView(View):
     def post(self, request):
         if request.is_ajax:
             account = SocialAccount.objects.get(id=request.POST.get('social_account_id'))
+            account = HashTable(account)
             if account.provider == 'custom_telegram':
                 request.user.send_news_to_telegram = False
             account.delete()
@@ -43,10 +48,12 @@ class DisconnectSocialAccountView(View):
         return HttpResponse(status=400)
 
 
+from .utils import merge_sort
 
 class CreateReview(LoginRequiredMixin, View):
     def get(self, request):
         categories = Category.objects.filter(is_main=True)
+        merge_sort(categories)
         form = ReviewForm()
         return render(request, template_name='auth_system/create_review.html', context={'form': form, 'categories': categories})
 

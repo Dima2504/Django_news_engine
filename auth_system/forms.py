@@ -8,6 +8,7 @@ from allauth.account.forms import SetPasswordForm
 
 from django import forms
 
+from .utils import HashTable
 
 class MyLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
@@ -37,6 +38,7 @@ class MyResetPasswordForm(ResetPasswordForm):
             "placeholder": 'Ел. Пошта',
             "class": 'shadow-default'
         })
+        return HashTable(self.fields)
 
 
 class MyResetPasswordKeyForm(ResetPasswordKeyForm):
@@ -52,6 +54,8 @@ class MyResetPasswordKeyForm(ResetPasswordKeyForm):
             'placeholder': 'Повтор паролю',
             'class': 'shadow-default'
         })
+        return HashTable(self.fields)
+
 
 
 
@@ -73,6 +77,7 @@ class MyChangePasswordForm(ChangePasswordForm):
             'placeholder': 'Повтор паролю',
             'class': 'shadow-default'
         })
+        return HashTable(self.fields
 
 
 class MySetPasswordForm(SetPasswordForm):
@@ -80,6 +85,7 @@ class MySetPasswordForm(SetPasswordForm):
         super().__init__(*args, **kwargs)
         self.fields['password1'].widget.attrs['class'] = 'shadow-default'
         self.fields['password2'].widget.attrs['class'] = 'shadow-default'
+        return HashTable(self.fields
 
 
 
@@ -88,6 +94,7 @@ class MySocialSignupForm(SocialSignupForm):
         super().__init__(*args, **kwargs)
         self.fields['email'].widget = forms.TextInput(
             attrs={'type': 'email', 'class': 'shadow-default', 'placeholder': 'Ел. Пошта'})
+        return HashTable(self.fields
 
 
 class ReviewForm(forms.Form):
